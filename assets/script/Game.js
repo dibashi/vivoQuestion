@@ -1,6 +1,6 @@
 import DataMgr from 'DataMgr';
 import AudioMgr from 'AudioMgr';
-import HTTP from 'HTTP';
+
 const {
     ccclass,
     property
@@ -92,10 +92,7 @@ export default class Game extends cc.Component {
             cc.audioMgr = new AudioMgr();
             cc.audioMgr.init();
         }
-        if (!cc.HTTP) {
-            cc.HTTP = HTTP;
-            //console.log(cc.HTTP);
-        }
+      
 
         cc.dataMgr.canvasW = cc.find("Canvas").width;
         cc.dataMgr.canvasH = cc.find("Canvas").height;
@@ -146,6 +143,7 @@ export default class Game extends cc.Component {
         cc.dataMgr.gameData.aimNum = 8;
         if (cc.dataMgr.gameData.countGame - 1 < cc.dataMgr.gameData.aimNumArr.length)
             cc.dataMgr.gameData.aimNum = cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1];
+            
         cc.dataMgr.gameData.gameCardArr = cc.dataMgr.getOneCardArr_arr(cc.dataMgr.gameData.aimNum);
         cc.dataMgr.gameData.countTime = 5 + cc.dataMgr.gameData.gameCardArr.length;
         //个人数据清空

@@ -50,6 +50,8 @@ export default class DataMgr extends cc.Component {
             hp: 4,//初始值为4 输一局掉一滴血 先没血的输(平局 都扣血)
             isReady: false,//是否准备
             cardGet: 0,//属于当前玩家的卡片
+
+            result:null,//在 beginGame 置为null 
         },
         "userOther": {
             "headUrl": "http://www.jeekegame.com/api/upload/ai_icon/128.jpg",
@@ -62,6 +64,8 @@ export default class DataMgr extends cc.Component {
             hp: 4,//初始值为4 输一局掉一滴血 先没血的输(平局 都扣血)
             isReady: false,//是否准备
             cardGet: 0,//属于当前玩家的卡片
+
+            result:null,
         }
 
     }
@@ -342,14 +346,16 @@ export default class DataMgr extends cc.Component {
                             else
                                 cc.dataMgr.gameData.userMy.cardGet -= messageArr[2];
 
-                            if (cc.dataMgr.gameData.userMy.cardGet == cc.dataMgr.gameData.aimNum)
+                            if (cc.dataMgr.gameData.userOther.result)
                                 cc.dataMgr.broadcastOneSmallGmaeOver();
                         }
                         else {
-                            console.log("-- message step Other --");
-                            let gameJs = cc.find("Canvas").getComponent("Game");
-                            if (gameJs)
-                                gameJs.changeOtherCard(messageArr[0], messageArr[1], messageArr[2]);
+                            cc.dataMgr.gameData.userOther.result = messageArr[1];
+
+                            // console.log("-- message step Other --");
+                            // let gameJs = cc.find("Canvas").getComponent("Game");
+                            // if (gameJs)
+                            //     gameJs.changeOtherCard(messageArr[0], messageArr[1], messageArr[2]);
                         }
                     }
                     else if (messageArr[0] == 1) {
@@ -396,7 +402,7 @@ export default class DataMgr extends cc.Component {
                                         gameJs.beginGame();
                                 }, 1.2);
                             }
-
+                            else
                             cc.dataMgr.gameOver();
                         }
                         else

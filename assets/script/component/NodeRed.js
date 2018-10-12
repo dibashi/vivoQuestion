@@ -151,6 +151,9 @@ export default class NodeRed extends cc.Component {
                 this._cardNum
             ]
             cc.dataMgr.broadcast(message, 1);
+
+            //如果对方答完 一小局结束
+            
         }
         console.log("-- checkScore B -- " + this.node.y + " -- " + this._cardOwn + " -- " + cc.dataMgr.gameData.userMy.cardGet);
     }
