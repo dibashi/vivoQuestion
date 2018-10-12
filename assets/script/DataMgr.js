@@ -22,10 +22,15 @@ export default class DataMgr extends cc.Component {
 
         onGaming: false,//游戏是否开始
 
-        countZIndex: 0,
-        countTime: 12,//游戏的倒计时
-        countBox: 0,//记录box 的数量(用于确定 boxId)
+        countTime: 10,//游戏的倒计时
+        costTime :0,
         countGame: 0,//当前玩的是第几小局
+        checkPointIndexArr: [],//随机到的 关卡索引集合
+        perQuestionScore: 200, //每题分数
+        perSecondDecreaseScore:20, //花费1秒 扣的分数
+        totalQuestion:5, //总共题目数
+       
+        totalScore: 5*200+200,
 
         aimNum: 0,//目标分数
         aimNumArr: [1, 12, 2, 5],
@@ -46,8 +51,8 @@ export default class DataMgr extends cc.Component {
             "type": 1,
             "userId": 1000618,
 
-            //添加的数据
-            hp: 4,//初始值为4 输一局掉一滴血 先没血的输(平局 都扣血)
+           //添加的数据
+           curScore: 0,//玩家当前得分
             isReady: false,//是否准备
             cardGet: 0,//属于当前玩家的卡片
 
@@ -60,8 +65,8 @@ export default class DataMgr extends cc.Component {
             "type": 2,//type:2 是机器人机器人要自动抓红包。
             "userId": 10002280,
 
-            //添加的数据
-            hp: 4,//初始值为4 输一局掉一滴血 先没血的输(平局 都扣血)
+          //添加的数据
+          curScore: 0,//玩家当前得分
             isReady: false,//是否准备
             cardGet: 0,//属于当前玩家的卡片
 
@@ -73,9 +78,9 @@ export default class DataMgr extends cc.Component {
     //------ SDK 相关数据 ------
     messageId = 0;
 
-    gameID = 854584553;
-    gameKey = "24d01f584f0e49a1b7cc37464510832e";
-    gameSecret = "5d333807f8a4634e72b5fdcbca334760";
+    gameID = 854584554;
+    gameKey = "d9a81d56206356af325f0cafc1028b42";
+    gameSecret = "7408e86d08d4d92ab6e2868342cecb44";
 
     initData() {
         //版本比较 是否重置数据
@@ -118,7 +123,7 @@ export default class DataMgr extends cc.Component {
 
     }
 
-    //设置游戏的目标分值
+    //设置游戏的目标分值 没有改动自豪的代码，aimNumArr其实是checkPointIndexArr
     setAimNumArr(time, aimNumArr) {
         console.log("-- 确定目标分值 -- " + time);
         console.log(aimNumArr);
@@ -127,14 +132,7 @@ export default class DataMgr extends cc.Component {
             cc.dataMgr.gameData.aimNumTime = time;
         }
         else if (cc.dataMgr.gameData.aimNumTime == time) {
-            if (aimNumArr.length == 4 && cc.dataMgr.gameData.aimNumArr.length == 4) {
-                cc.dataMgr.gameData.aimNumArr[0] = parseInt((cc.dataMgr.gameData.aimNumArr[0] + aimNumArr[0]) / 2);
-                cc.dataMgr.gameData.aimNumArr[1] = parseInt((cc.dataMgr.gameData.aimNumArr[1] + aimNumArr[1]) / 2);
-                cc.dataMgr.gameData.aimNumArr[2] = parseInt((cc.dataMgr.gameData.aimNumArr[2] + aimNumArr[2]) / 2);
-                cc.dataMgr.gameData.aimNumArr[3] = parseInt((cc.dataMgr.gameData.aimNumArr[3] + aimNumArr[3]) / 2);
-            }
-            else
-                cc.dataMgr.gameData.aimNumArr = [6, 12, 2, 5];
+                cc.dataMgr.gameData.aimNumArr = [6, 12, 2, 5,20];
         }
     }
 

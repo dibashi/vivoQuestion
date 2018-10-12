@@ -8,22 +8,22 @@ const {
 
 @ccclass
 export default class Game extends cc.Component {
-     //控件UI
-     @property(cc.Node)
-     node_my = null;
-     @property(cc.Node)
-     node_other = null;
-     @property(cc.Node)
-     node_time = null;
- 
- 
-     @property(cc.Node)
-     node_ready = null;
- 
-     @property(cc.Label)
-     label_results = [];
-     @property(cc.Label)
-     label_title = null;
+    //控件UI
+    @property(cc.Node)
+    node_my = null;
+    @property(cc.Node)
+    node_other = null;
+    @property(cc.Node)
+    node_time = null;
+
+
+    @property(cc.Node)
+    node_ready = null;
+
+    @property(cc.Label)
+    label_results = [];
+    @property(cc.Label)
+    label_title = null;
 
     onLoad() {
         console.log("-- 实验区域 --");
@@ -57,11 +57,9 @@ export default class Game extends cc.Component {
 
     start() {
         this.node_time.active = false;
-        this.node_score.active = false;
-        this.hint_my.active = false;
-        this.hint_other.active = false;
 
         this.node_ready.active = true;
+
         this.node_ready.getChildByName("tishi").active = true;
         this.node_ready.getChildByName("spr_bg").active = true;
 
@@ -80,47 +78,49 @@ export default class Game extends cc.Component {
             cc.audioMgr = new AudioMgr();
             cc.audioMgr.init();
         }
-      
+
 
         cc.dataMgr.canvasW = cc.find("Canvas").width;
         cc.dataMgr.canvasH = cc.find("Canvas").height;
     }
+
 
     initGame() {
         console.log("-- initGame 且 随机 ainNum -- " + cc.dataMgr.gameData.countTime);
         console.log(cc.dataMgr.gameData);
 
         this.node_ready.active = true;
+        //其实已经ready过了，这里是onStart的回调。
         this.node_ready.getComponent("NodeReady").showReady();
 
         //初始化自己信息 和 玩家信息
         this.node_my.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userMy.headUrl);
         this.node_my.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userMy.sex != "f");
-        this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
+        this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.curScore / cc.dataMgr.gameData.totalScore);
 
         this.node_other.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userOther.headUrl);
         this.node_other.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userOther.sex != "f");
-        this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
+        this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.curScore / cc.dataMgr.gameData.totalScore);
 
-        //在这里要确定 四局的目标分值
-        let aimNumArr = [];
+
+
+
+        //在这里要确定 5局的关卡索引
+        let checkPointIndexArr = [];
         let time = Date.now();
-        for (let i = 0; i < 4; ++i) {
-            let aimNum = Math.floor(Math.random() * 20) + 1;
-            aimNumArr.push(aimNum);
+        for (let i = 0; i < cc.dataMgr.gameData.totalQuestion; ++i) {
+            let checkPointIndex = Math.floor(Math.random() * cc.dataMgr.questionLibs.length);
+            checkPointIndexArr.push(checkPointIndex);
         }
         //注意顺序代表的值 (arr 中不能有字符串)
         let param = [
             1,//代表同步 arrNum
-            aimNumArr,
+            checkPointIndexArr,
             time
-        ]
+        ];
+        console.log(param);
         cc.dataMgr.broadcast(param, 0);
-
-        cc.dataMgr.setAimNumArr(time, aimNumArr);
-
-        console.log(time + " -- " + cc.dataMgr.gameData.aimNumTime);
-        console.log(aimNumArr);
+      
     }
 
     beginGame() {
@@ -131,7 +131,7 @@ export default class Game extends cc.Component {
         cc.dataMgr.gameData.aimNum = 8;
         if (cc.dataMgr.gameData.countGame - 1 < cc.dataMgr.gameData.aimNumArr.length)
             cc.dataMgr.gameData.aimNum = cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1];
-            
+
         cc.dataMgr.gameData.gameCardArr = cc.dataMgr.getOneCardArr_arr(cc.dataMgr.gameData.aimNum);
         cc.dataMgr.gameData.countTime = 5 + cc.dataMgr.gameData.gameCardArr.length;
         //个人数据清空
