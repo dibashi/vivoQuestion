@@ -24,6 +24,8 @@ export default class Game extends cc.Component {
     label_results = [];
     @property(cc.Label)
     label_title = null;
+    @property(cc.Node)
+    node_game = null;
 
     onLoad() {
         console.log("-- 实验区域 --");
@@ -182,7 +184,14 @@ export default class Game extends cc.Component {
         // }
 
         //初始化 题目 答案 显示
+       this.node_game.active = true;
 
+        this.label_results[0].string = cpData.A;
+        this.label_results[1].string = cpData.B;
+        this.label_results[2].string = cpData.C;
+        this.label_results[3].string = cpData.D;
+
+        this.label_title.string = cpData.question;
 
         //判断是否为机器人 如果是开始ai
         if (cc.dataMgr.gameData.userOther.type == 2)
