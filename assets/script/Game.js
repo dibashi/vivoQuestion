@@ -228,6 +228,22 @@ export default class Game extends cc.Component {
         this.autoGetRed();
     }
 
+
+    resultBtnClick(event, eventData) {
+
+        if (eventData == cc.dataMgr.getCurrentCheckpointData().result) {
+            console.log("答对了");
+            //一，根据花费时间计算分数
+            //2,播放答对动画，
+            //3,查看对方是否答完，若答完直接显示，没答完阻塞
+            cc.dataMgr.gameData.userMy.curScore += cc.dataMgr.getThisCPScore();
+        } else {
+            console.log("答错了");
+        }
+
+
+    }
+
     changeOtherCard(isAdd, cardId, cardNum) {
         console.log("-- 改变对面红包 -- " + isAdd + " -- " + cardId + " -- " + cardNum);
         if (isAdd) {
