@@ -25,15 +25,15 @@ export default class DataMgr extends cc.Component {
         countTime: 10,//游戏的倒计时
         costTime :0,
         countGame: 0,//当前玩的是第几小局
-        checkPointIndexArr: [],//随机到的 关卡索引集合
+        aimNumArr: [6, 12, 2, 5,20],//随机到的 关卡索引集合 //checkPointIndexArr
         perQuestionScore: 200, //每题分数
         perSecondDecreaseScore:20, //花费1秒 扣的分数
         totalQuestion:5, //总共题目数
        
         totalScore: 5*200+200,
 
-        aimNum: 0,//目标分数
-        aimNumArr: [1, 12, 2, 5],
+        result: "A",//答案
+      
         aimNumTime: 0,//确定这个时间 aimNumArr 的时间戳
         gameCardArr: [],//当前显示的 卡片
 
@@ -131,9 +131,7 @@ export default class DataMgr extends cc.Component {
             cc.dataMgr.gameData.aimNumArr = aimNumArr;
             cc.dataMgr.gameData.aimNumTime = time;
         }
-        else if (cc.dataMgr.gameData.aimNumTime == time) {
-                cc.dataMgr.gameData.aimNumArr = [6, 12, 2, 5,20];
-        }
+       
     }
 
     //获取一个 数组 TODO

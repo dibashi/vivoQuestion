@@ -109,7 +109,7 @@ export default class Game extends cc.Component {
         let checkPointIndexArr = [];
         let time = Date.now();
         for (let i = 0; i < cc.dataMgr.gameData.totalQuestion; ++i) {
-            let checkPointIndex = Math.floor(Math.random() * cc.dataMgr.questionLibs.length);
+            let checkPointIndex = Math.floor(Math.random() * questionLibs.length);
             checkPointIndexArr.push(checkPointIndex);
         }
         //注意顺序代表的值 (arr 中不能有字符串)
@@ -128,57 +128,61 @@ export default class Game extends cc.Component {
 
         //整理 和 初始化数据
         ++cc.dataMgr.gameData.countGame;
-        cc.dataMgr.gameData.aimNum = 8;
-        if (cc.dataMgr.gameData.countGame - 1 < cc.dataMgr.gameData.aimNumArr.length)
-            cc.dataMgr.gameData.aimNum = cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1];
-
-        cc.dataMgr.gameData.gameCardArr = cc.dataMgr.getOneCardArr_arr(cc.dataMgr.gameData.aimNum);
-        cc.dataMgr.gameData.countTime = 5 + cc.dataMgr.gameData.gameCardArr.length;
-        //个人数据清空
-        cc.dataMgr.gameData.userMy.cardGet = 0;
-        cc.dataMgr.gameData.userOther.cardGet = 0;
+        //关卡数据条目
+        let cpData = questionLibs[cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1]];
+        cc.dataMgr.gameData.result = cpData.result;
+        
+        cc.dataMgr.gameData.countTime = 10;
 
         cc.dataMgr.gameData.oneOverData = null;//清空小局信息
 
-        console.log("-- 第 " + cc.dataMgr.gameData.countGame + " 小局 -- " + cc.dataMgr.gameData.aimNum + " -- " + cc.dataMgr.gameData.gameCardArr.length);
+        console.log("-- 第 " + cc.dataMgr.gameData.countGame + " 小局 -- " + " -- " + cc.dataMgr.gameData.result);
+        console.log( cpData);
 
-        //提示隐藏
-        this.hint_my.active = false;
-        this.hint_other.active = false;
+     
 
         //倒计时 和 目标分值
+        this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
         this.node_time.active = true;
         this.node_time.stopAllActions();
         this.node_time.runAction(cc.repeat(cc.sequence(cc.delayTime(1), cc.callFunc(this.callCountTime, this)), cc.dataMgr.gameData.countTime));
-        this.node_score.active = true;
-        this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
-        this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 - 60, this.node_score.y)));
-        this.node_score.getChildByName("lab_score").getComponent(cc.Label).string = cc.dataMgr.gameData.aimNum;
-        this.node_score.getChildByName("lab_scoreB").getComponent(cc.Label).string = cc.dataMgr.gameData.aimNum;
+       
+       let beginRange = this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange;
+        this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5,1,beginRange),this.myCircleTo_act(9.5,0,1)));
+        
+        
+        // this.node_score.active = true;
+        // this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
+        // this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 - 60, this.node_score.y)));
+        // this.node_score.getChildByName("lab_score").getComponent(cc.Label).string = cc.dataMgr.gameData.aimNum;
+        // this.node_score.getChildByName("lab_scoreB").getComponent(cc.Label).string = cc.dataMgr.gameData.aimNum;
 
-        this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
-        this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
+        // this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
+        // this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
 
-        //移除并 初始化红包
-        for (let i = 0; i < this.root_red.children.length; ++i) {
-            let nodeN = this.root_red.children[i];
-            nodeN.position = cc.v2(0, 0);
-            nodeN.active = false;
-        }
+        //移除并 初始化题目
+        // for (let i = 0; i < this.root_red.children.length; ++i) {
+        //     let nodeN = this.root_red.children[i];
+        //     nodeN.position = cc.v2(0, 0);
+        //     nodeN.active = false;
+        // }
 
-        for (let i = 0; i < cc.dataMgr.gameData.gameCardArr.length; ++i) {
-            ++cc.dataMgr.gameData.countBox;
-            let cardNum = cc.dataMgr.gameData.gameCardArr[i];
-            let nodeN = null;
-            if (i < this.root_red.children.length)
-                nodeN = this.root_red.children[i];
-            else {
-                nodeN = cc.instantiate(this.pre_red);
-                this.root_red.addChild(nodeN);
-            }
-            nodeN.active = true;
-            nodeN.getComponent("NodeRed").initRed(cardNum, cc.dataMgr.gameData.countBox, null);
-        }
+        // for (let i = 0; i < cc.dataMgr.gameData.gameCardArr.length; ++i) {
+        //     ++cc.dataMgr.gameData.countBox;
+        //     let cardNum = cc.dataMgr.gameData.gameCardArr[i];
+        //     let nodeN = null;
+        //     if (i < this.root_red.children.length)
+        //         nodeN = this.root_red.children[i];
+        //     else {
+        //         nodeN = cc.instantiate(this.pre_red);
+        //         this.root_red.addChild(nodeN);
+        //     }
+        //     nodeN.active = true;
+        //     nodeN.getComponent("NodeRed").initRed(cardNum, cc.dataMgr.gameData.countBox, null);
+        // }
+
+        //初始化 题目 答案 显示
+
 
         //判断是否为机器人 如果是开始ai
         if (cc.dataMgr.gameData.userOther.type == 2)
@@ -309,7 +313,39 @@ export default class Game extends cc.Component {
             cc.dataMgr.gameData.countTime = 0;
         }
         this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
+
+
     }
+
+
+     //圆形cd:总时间、百分比(0~1)
+     myCircleTo_act(timeT, aimRange,beginRange) {
+        let action = cc.delayTime(timeT);
+        action.aimRange = aimRange;
+        action.beginRange = beginRange;
+        action.update = function (dt) {
+            let node = action.getTarget();
+            if (node) {
+                node.getComponent(cc.Sprite).fillRange = this.beginRange + (this.aimRange-this.beginRange) *dt;
+            }
+        };
+        return action;
+    }
+
+    myProgressTo_act(timeT, aimProgress, baseProgress) {
+        let action = cc.delayTime(timeT);
+        action.aimProgress = aimProgress;
+        action.baseProgress = baseProgress;
+        action.update = function (dt) {
+            let node = action.getTarget();
+            if (node && node.getComponent(cc.ProgressBar)) {
+                node.getComponent(cc.ProgressBar).progress = baseProgress + dt * (this.aimProgress - this.baseProgress);
+            }
+        };
+        return action;
+    }
+
+
 
     getGameFrame_sf(name) {
         let sf = this.atlas_frame.getSpriteFrame(name);
