@@ -8,34 +8,22 @@ const {
 
 @ccclass
 export default class Game extends cc.Component {
-    @property(cc.Prefab)
-    pre_red = null;
-
-    @property(cc.SpriteAtlas)
-    atlas_frame = null;
-
-    //游戏中的提示
-    @property(cc.Node)
-    node_game = null;
-    @property(cc.Node)
-    root_red = null;
-    @property(cc.Node)
-    hint_other = null;
-    @property(cc.Node)
-    hint_my = null;
-
-    //控件UI
-    @property(cc.Node)
-    node_my = null;
-    @property(cc.Node)
-    node_other = null;
-    @property(cc.Node)
-    node_time = null;
-    @property(cc.Node)
-    node_score = null;
-
-    @property(cc.Node)
-    node_ready = null;
+     //控件UI
+     @property(cc.Node)
+     node_my = null;
+     @property(cc.Node)
+     node_other = null;
+     @property(cc.Node)
+     node_time = null;
+ 
+ 
+     @property(cc.Node)
+     node_ready = null;
+ 
+     @property(cc.Label)
+     label_results = [];
+     @property(cc.Label)
+     label_title = null;
 
     onLoad() {
         console.log("-- 实验区域 --");
