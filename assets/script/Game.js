@@ -254,6 +254,8 @@ export default class Game extends cc.Component {
 
 
     resultBtnClick(event, eventData) {
+
+        cc.audioMgr.playEffect("button");
         this.isAnswer = true;
         let score = 0;
         if (eventData == this.cpData.result) {
@@ -275,7 +277,8 @@ export default class Game extends cc.Component {
             3,
             score,
             eventData
-        ]
+        ];
+
         console.log(message);
         cc.dataMgr.broadcast(message, 1);
 
@@ -316,6 +319,11 @@ export default class Game extends cc.Component {
 
         // if (numMy == cc.dataMgr.gameData.aimNum)
         //     cc.audioMgr.playEffect("success");
+        if(cc.dataMgr.gameData.result == this.cpData.result) {
+            cc.audioMgr.playEffect("success");
+        } else {
+            cc.audioMgr.playEffect("shibai");
+        }
         console.log("单小局结束！！");
     }
 
