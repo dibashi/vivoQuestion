@@ -22,6 +22,8 @@ export default class Game extends cc.Component {
 
     @property(cc.Label)
     label_results = [];
+    @property(cc.Button)
+    btn_results = [];
     @property(cc.Label)
     label_title = null;
     @property(cc.Node)
@@ -144,7 +146,9 @@ export default class Game extends cc.Component {
         console.log(this.cpData);
 
 
-
+        for(let bi = 0; bi<this.btn_results.length;bi++) {
+            this.btn_results[bi].interactable = true;
+        }
         //倒计时 和 目标分值
         this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
         this.node_time.active = true;
@@ -254,7 +258,9 @@ export default class Game extends cc.Component {
 
 
     resultBtnClick(event, eventData) {
-
+        for(let bi = 0; bi<this.btn_results.length;bi++) {
+            this.btn_results[bi].interactable = false;
+        }
         cc.audioMgr.playEffect("button");
         this.isAnswer = true;
         let score = 0;
@@ -301,24 +307,7 @@ export default class Game extends cc.Component {
     }
 
     showOverHint() {
-        //let numMy = cc.dataMgr.gameData.userMy.cardGet;
-        // let numOther = cc.dataMgr.gameData.userOther.cardGet;
-
-        // this.hint_my.active = true;
-        // this.hint_my.getChildByName("spr_success").active = (numMy == cc.dataMgr.gameData.aimNum);
-        // this.hint_my.getChildByName("spr_faild").active = (numMy != cc.dataMgr.gameData.aimNum);
-        // this.hint_other.active = true;
-        // this.hint_other.getChildByName("spr_success").active = (numOther == cc.dataMgr.gameData.aimNum);
-        // this.hint_other.getChildByName("spr_faild").active = (numOther != cc.dataMgr.gameData.aimNum);
-
-        // this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
-        // this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
-
-        // this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 + 60, this.node_score.y)));
-        // this.node_time.active = false;
-
-        // if (numMy == cc.dataMgr.gameData.aimNum)
-        //     cc.audioMgr.playEffect("success");
+       
         if(cc.dataMgr.gameData.userMy.result == this.cpData.result) {
             cc.audioMgr.playEffect("success");
         } else {
@@ -393,12 +382,5 @@ export default class Game extends cc.Component {
         return sf;
     }
 
-    onClickBtn(event, customeData) {
-        if (event.target) {
-            let btnN = event.target.name;
-            console.log("-- onClickBtn Game --" + btnN);
-            if (btnN == "") {
-            }
-        }
-    }
+    
 }
