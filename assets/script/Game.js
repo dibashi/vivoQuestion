@@ -122,7 +122,7 @@ export default class Game extends cc.Component {
         ];
         console.log(param);
         cc.dataMgr.broadcast(param, 0);
-      
+
     }
 
     beginGame() {
@@ -133,26 +133,26 @@ export default class Game extends cc.Component {
         //关卡数据条目
         let cpData = questionLibs[cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1]];
         cc.dataMgr.gameData.result = cpData.result;
-        
+
         cc.dataMgr.gameData.countTime = 10;
 
         cc.dataMgr.gameData.oneOverData = null;//清空小局信息
 
         console.log("-- 第 " + cc.dataMgr.gameData.countGame + " 小局 -- " + " -- " + cc.dataMgr.gameData.result);
-        console.log( cpData);
+        console.log(cpData);
 
-     
+
 
         //倒计时 和 目标分值
         this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
         this.node_time.active = true;
         this.node_time.stopAllActions();
         this.node_time.runAction(cc.repeat(cc.sequence(cc.delayTime(1), cc.callFunc(this.callCountTime, this)), cc.dataMgr.gameData.countTime));
-       
-       let beginRange = this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange;
-        this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5,1,beginRange),this.myCircleTo_act(9.5,0,1)));
-        
-        
+
+        let beginRange = this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange;
+        this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5, 1, beginRange), this.myCircleTo_act(9.5, 0, 1)));
+
+
         // this.node_score.active = true;
         // this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
         // this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 - 60, this.node_score.y)));
@@ -184,7 +184,7 @@ export default class Game extends cc.Component {
         // }
 
         //初始化 题目 答案 显示
-       this.node_game.active = true;
+        this.node_game.active = true;
 
         this.label_results[0].string = cpData.A;
         this.label_results[1].string = cpData.B;
@@ -327,15 +327,15 @@ export default class Game extends cc.Component {
     }
 
 
-     //圆形cd:总时间、百分比(0~1)
-     myCircleTo_act(timeT, aimRange,beginRange) {
+    //圆形cd:总时间、百分比(0~1)
+    myCircleTo_act(timeT, aimRange, beginRange) {
         let action = cc.delayTime(timeT);
         action.aimRange = aimRange;
         action.beginRange = beginRange;
         action.update = function (dt) {
             let node = action.getTarget();
             if (node) {
-                node.getComponent(cc.Sprite).fillRange = this.beginRange + (this.aimRange-this.beginRange) *dt;
+                node.getComponent(cc.Sprite).fillRange = this.beginRange + (this.aimRange - this.beginRange) * dt;
             }
         };
         return action;
