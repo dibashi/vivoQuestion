@@ -22,18 +22,19 @@ export default class DataMgr extends cc.Component {
 
         onGaming: false,//游戏是否开始
 
+        perTime:10,//每局时间 用于Ai 与下面这个值必须一样
         countTime: 10,//游戏的倒计时
-        costTime :0,
+
         countGame: 0,//当前玩的是第几小局
-        aimNumArr: [6, 12, 2, 5,20],//随机到的 关卡索引集合 //checkPointIndexArr
+        aimNumArr: [6, 12, 2, 5, 20],//随机到的 关卡索引集合 //checkPointIndexArr
         perQuestionScore: 200, //每题分数
-        perSecondDecreaseScore:20, //花费1秒 扣的分数
-        totalQuestion:5, //总共题目数
-       
-        totalScore: 5*200+200,
+        perSecondDecreaseScore: 20, //花费1秒 扣的分数
+        totalQuestion: 5, //总共题目数
+
+        totalScore: 5 * 200 + 200,
 
         result: "A",//答案
-      
+
         aimNumTime: 0,//确定这个时间 aimNumArr 的时间戳
         gameCardArr: [],//当前显示的 卡片
 
@@ -51,12 +52,12 @@ export default class DataMgr extends cc.Component {
             "type": 1,
             "userId": 1000618,
 
-           //添加的数据
-           curScore: 0,//玩家当前得分
+            //添加的数据
+            curScore: 0,//玩家当前得分
             isReady: false,//是否准备
             cardGet: 0,//属于当前玩家的卡片
 
-            result:null,//在 beginGame 置为null 
+            result: null,//在 beginGame 置为null 
         },
         "userOther": {
             "headUrl": "http://www.jeekegame.com/api/upload/ai_icon/128.jpg",
@@ -65,12 +66,12 @@ export default class DataMgr extends cc.Component {
             "type": 2,//type:2 是机器人机器人要自动抓红包。
             "userId": 10002280,
 
-          //添加的数据
-          curScore: 0,//玩家当前得分
+            //添加的数据
+            curScore: 0,//玩家当前得分
             isReady: false,//是否准备
             cardGet: 0,//属于当前玩家的卡片
 
-            result:null,
+            result: null,
         }
 
     }
@@ -131,7 +132,7 @@ export default class DataMgr extends cc.Component {
             cc.dataMgr.gameData.aimNumArr = aimNumArr;
             cc.dataMgr.gameData.aimNumTime = time;
         }
-       
+
     }
 
     //获取一个 数组 TODO
@@ -196,23 +197,9 @@ export default class DataMgr extends cc.Component {
     broadcastOneSmallGmaeOver() {
         cc.dataMgr.gameData.onGaming = false;
 
-        let num = 3;
-        //一小局结束 判断这一局谁赢了
-        let numMy = cc.dataMgr.gameData.userMy.cardGet;
-        let numOther = cc.dataMgr.gameData.userOther.cardGet;
-
-        if (numMy == numOther)
-            num = 3;
-        else if (numMy == cc.dataMgr.gameData.aimNum)
-            num = 1;
-        else if (numOther == cc.dataMgr.gameData.aimNum)
-            num = 2;
-
         let time = Date.now();
         let param = [
             2,//代表一小局结束
-            num,
-            cc.dataMgr.gameData.countGame, // 这是第几小局的结果
             time
         ]
         cc.dataMgr.broadcast(param, 1);
@@ -333,25 +320,33 @@ export default class DataMgr extends cc.Component {
                 console.log("-- message step B --" + messageStr);
                 let messageArr = JSON.parse(messageStr);
                 if (messageArr && messageArr.length > 0) {
-                    if (typeof (messageArr[0]) == "boolean") {
+                    if (messageArr[0] == 3) {
                         //let message = [true,this._cardId,this._cardNum]
                         console.log("-- message step in add card -- " + cc.dataMgr.gameData.userMy.userId);
                         if (param.userId == cc.dataMgr.gameData.userMy.userId) {
-                            if (messageArr[0])
-                                cc.dataMgr.gameData.userMy.cardGet += messageArr[2];
-                            else
-                                cc.dataMgr.gameData.userMy.cardGet -= messageArr[2];
+
+                            cc.dataMgr.gameData.userMy.curScore += messageArr[1];
+                            cc.dataMgr.gameData.userMy.result = messageArr[2];
+                            
+                            let gameJs = cc.find("Canvas").getComponent("Game");
+                            if (gameJs) {
+                                gameJs.changeMyScore();
+                            }
+
 
                             if (cc.dataMgr.gameData.userOther.result)
                                 cc.dataMgr.broadcastOneSmallGmaeOver();
                         }
                         else {
-                            cc.dataMgr.gameData.userOther.result = messageArr[1];
-
-                            // console.log("-- message step Other --");
-                            // let gameJs = cc.find("Canvas").getComponent("Game");
-                            // if (gameJs)
-                            //     gameJs.changeOtherCard(messageArr[0], messageArr[1], messageArr[2]);
+                            console.log("-- message step Other --");
+                            cc.dataMgr.gameData.userOther.result = messageArr[2];
+                            let gameJs = cc.find("Canvas").getComponent("Game");
+                            if (gameJs) {
+                                gameJs.changeOtherScore();
+                            }
+                               
+                            if (cc.dataMgr.gameData.userMy.result)
+                            cc.dataMgr.broadcastOneSmallGmaeOver();
                         }
                     }
                     else if (messageArr[0] == 1) {
@@ -361,48 +356,24 @@ export default class DataMgr extends cc.Component {
                     else if (messageArr[0] == 2) {
                         console.log("-- onMessage 一小局结束 --");
                         //let param = [ 2,//代表一小局结束 result//输赢,cc.dataMgr.gameData.countGame, // 这是第几小局的结果 time]
-                        if (messageArr[2] == cc.dataMgr.gameData.countGame) {
-                            cc.dataMgr.gameData.oneOverData = messageArr;
-                            //这是是真的结果解析之后 再这里扣除血量
-                            if (messageArr[1] == 1) {
-                                if (param.userId == cc.dataMgr.gameData.userMy.userId) {
-                                    cc.dataMgr.gameData.userOther.hp -= 1;
-                                }
-                                else {
-                                    cc.dataMgr.gameData.userMy.hp -= 1;
-                                }
-                            }
-                            else if (messageArr[1] == 2) {
-                                if (param.userId == cc.dataMgr.gameData.userMy.userId) {
-                                    cc.dataMgr.gameData.userMy.hp -= 1;
-                                }
-                                else {
-                                    cc.dataMgr.gameData.userOther.hp -= 1;
-                                }
-                            }
-                            else {
-                                //平局两个都减
-                                cc.dataMgr.gameData.userOther.hp -= 1;
-                                cc.dataMgr.gameData.userMy.hp -= 1;
-                            }
 
-                            //显示是否凑齐牌
-                            let gameJs = cc.find("Canvas").getComponent("Game");
-                            if (gameJs)
-                                gameJs.showOverHint();
 
-                            if (cc.dataMgr.gameData.userOther.hp > 0 && cc.dataMgr.gameData.userMy.hp > 0) {
-                                cc.dataMgr.scheduleOnce(function () {
-                                    let gameJs = cc.find("Canvas").getComponent("Game");
-                                    if (gameJs && cc.dataMgr.gameData.userOther.hp > 0 && cc.dataMgr.gameData.userMy.hp > 0)
-                                        gameJs.beginGame();
-                                }, 1.2);
-                            }
-                            else
-                            cc.dataMgr.gameOver();
+
+                        //显示答案
+                        let gameJs = cc.find("Canvas").getComponent("Game");
+                        if (gameJs)
+                            gameJs.showOverHint();
+
+                        if (cc.dataMgr.gameData.countGame<=cc.dataMgr.gameData.totalQuestion) {
+                            cc.dataMgr.scheduleOnce(function () {
+                                let gameJs = cc.find("Canvas").getComponent("Game");
+                                
+                                gameJs.beginGame();
+                            }, 1.2);
                         }
                         else
-                            console.log("-- 警告 忽略消息 oneSmallOver --");
+                            cc.dataMgr.gameOver();
+
                     }
                 }
             }

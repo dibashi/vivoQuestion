@@ -126,20 +126,22 @@ export default class Game extends cc.Component {
     }
 
     beginGame() {
+        this.isAnswer = false; //标记用户还没有答题，若没打过，在超时时处理，若打过，超时不处理
         cc.dataMgr.gameData.onGaming = true;
-
+        cc.dataMgr.gameData.userOther.result = null;
+        cc.dataMgr.gameData.userMy.result = null;
         //整理 和 初始化数据
         ++cc.dataMgr.gameData.countGame;
         //关卡数据条目
-        let cpData = questionLibs[cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1]];
-        cc.dataMgr.gameData.result = cpData.result;
+        this.cpData = questionLibs[cc.dataMgr.gameData.aimNumArr[cc.dataMgr.gameData.countGame - 1]];
+        cc.dataMgr.gameData.result = this.cpData.result;
 
         cc.dataMgr.gameData.countTime = 10;
 
         cc.dataMgr.gameData.oneOverData = null;//清空小局信息
 
         console.log("-- 第 " + cc.dataMgr.gameData.countGame + " 小局 -- " + " -- " + cc.dataMgr.gameData.result);
-        console.log(cpData);
+        console.log(this.cpData);
 
 
 
@@ -186,132 +188,150 @@ export default class Game extends cc.Component {
         //初始化 题目 答案 显示
         this.node_game.active = true;
 
-        this.label_results[0].string = cpData.A;
-        this.label_results[1].string = cpData.B;
-        this.label_results[2].string = cpData.C;
-        this.label_results[3].string = cpData.D;
+        this.label_results[0].string = this.cpData.A;
+        this.label_results[1].string = this.cpData.B;
+        this.label_results[2].string = this.cpData.C;
+        this.label_results[3].string = this.cpData.D;
 
-        this.label_title.string = cpData.question;
+        this.label_title.string = this.cpData.question;
 
         //判断是否为机器人 如果是开始ai
         if (cc.dataMgr.gameData.userOther.type == 2)
-            this.autoGetRed();
+            this.AILogic();
     }
 
-    autoGetRed() {
-        if (cc.dataMgr.gameData.onGaming && cc.dataMgr.gameData.userOther.hp > 0 && cc.dataMgr.gameData.userMy.hp > 0) {
-            this.node_other.stopAllActions();
-            let randTime = Math.random() * 3 + 1;
-            this.node_other.runAction(cc.sequence(cc.delayTime(randTime), cc.callFunc(this.callGetCard, this)));
+    AILogic() {
+
+        this.node_other.stopAllActions();
+        this.AIRandTime = Math.random() * 4 + 1;
+        this.node_other.runAction(cc.sequence(cc.delayTime(this.AIRandTime), cc.callFunc(this.autoAnswer, this)));
+
+    }
+
+    autoAnswer() {
+       let ri = Math.floor(Math.random()*4);
+        console.log("-- ai -- " + ri);
+        let rA ="Z";
+        if(ri == 0) {
+            rA = "A";
+        } else if(ri == 1) {
+            rA = "B";
+        } else if(ri == 2) {
+            rA = "C";
+        } else if(ri == 3){
+            rA = "D";
         }
-    }
 
-    callGetCard() {
-        let cardNum = 1;
-        if (cc.dataMgr.gameData.aimNum - cc.dataMgr.gameData.userOther.cardGet >= 5)
-            cardNum = 5;
-        else if (cc.dataMgr.gameData.aimNum - cc.dataMgr.gameData.userOther.cardGet >= 2)
-            cardNum = 2;
+        let score = 0;
+        if (rA == this.cpData.result) {
+            console.log("AI答对了");
+            //一，根据花费时间计算分数
+            //2,播放答对动画，
+            //3,查看对方是否答完，若答完直接显示，没答完阻塞
 
-        console.log("-- ai -- " + cardNum);
-        //注意顺序代表的值 (arr 中不能有字符串)
+            if (cc.dataMgr.gameData.countGame == cc.dataMgr.gameData.totalQuestion) {
+                score = 2 * ((cc.dataMgr.gameData.perTime - this.AIRandTime) * 20);
+            } else {
+                score = (cc.dataMgr.gameData.perTime - this.AIRandTime) * 20;
+            }
+        } else {
+            console.log("AI答错了");
+        }
+
         let message = [
-            true,
-            ++cc.dataMgr.gameData.countBox,
-            cardNum
-        ];
+            3,
+            score,
+            rA
+        ]
+        console.log(message);
+
         let param = {
             "message": JSON.stringify(message),
             "userId": cc.dataMgr.gameData.userOther.userId
         }
         cc.dataMgr.onMessage(param);
-
-        this.autoGetRed();
     }
 
 
     resultBtnClick(event, eventData) {
-
-        if (eventData == cc.dataMgr.getCurrentCheckpointData().result) {
+        this.isAnswer = true;
+        let score = 0;
+        if (eventData == this.cpData.result) {
             console.log("答对了");
             //一，根据花费时间计算分数
             //2,播放答对动画，
             //3,查看对方是否答完，若答完直接显示，没答完阻塞
-            cc.dataMgr.gameData.userMy.curScore += cc.dataMgr.getThisCPScore();
+
+            if (cc.dataMgr.gameData.countGame == cc.dataMgr.gameData.totalQuestion) {
+                score = 2 * (cc.dataMgr.gameData.countTime * 20);
+            } else {
+                score = cc.dataMgr.gameData.countTime * 20;
+            }
         } else {
             console.log("答错了");
         }
 
+        let message = [
+            3,
+            score,
+            eventData
+        ]
+        console.log(message);
+        cc.dataMgr.broadcast(message, 1);
 
     }
 
-    changeOtherCard(isAdd, cardId, cardNum) {
-        console.log("-- 改变对面红包 -- " + isAdd + " -- " + cardId + " -- " + cardNum);
-        if (isAdd) {
-            ++cc.dataMgr.gameData.countBox
-            let nodeN = null;
-            for (let i = 0; i < this.root_red.children.length; ++i) {
-                if (!this.root_red.children[i].active) {
-                    nodeN = this.root_red.children[i];
-                    break;
-                }
-            }
-            if (!nodeN) {
-                nodeN = cc.instantiate(this.pre_red);
-                this.root_red.addChild(nodeN);
-            }
-            nodeN.active = true;
-            nodeN.getComponent("NodeRed").initRed(cardNum, cardId, "other");
+    changeMyScore() {
+        console.log("changeMyScore");
+        this.node_my.getChildByName("scoreLabel").getComponent(cc.Label).string = cc.dataMgr.gameData.userMy.curScore;
+        //this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = cc.dataMgr.gameData.userMy.curScore/cc.dataMgr.gameData.totalScore;
+        this.node_my.getChildByName("pro_hp").runAction(this.myProgressTo_act(1, cc.dataMgr.gameData.userMy.curScore / cc.dataMgr.gameData.totalScore, this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress));
 
-            cc.dataMgr.gameData.userOther.cardGet += cardNum;
-            if (cc.dataMgr.gameData.userOther.cardGet == cc.dataMgr.gameData.aimNum)
-                cc.dataMgr.broadcastOneSmallGmaeOver();
-        }
-        else {
-            let cutCard = false;
-            for (let i = 0; i < this.root_red.children.length; ++i) {
-                let nodeN = this.root_red.children[i];
-                let nodeNJs = nodeN.getComponent("NodeRed");
-                if (nodeN.active && nodeNJs) {
-                    if (nodeNJs._cardOwn == "other" && nodeNJs._cardId == cardId) {
-                        nodeN.active = false;
-                        cutCard = true;
-                        break;
-                    }
-                }
-            }
-            if (cutCard)
-                cc.dataMgr.gameData.userOther.cardGet -= cardNum;
+    }
 
-        }
+    changeOtherScore() {
+        console.log("changeOtherScore");
+        this.node_other.getChildByName("scoreLabel").getComponent(cc.Label).string = cc.dataMgr.gameData.userOther.curScore;
+        //this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = cc.dataMgr.gameData.userMy.curScore/cc.dataMgr.gameData.totalScore;
+        this.node_other.getChildByName("pro_hp").runAction(this.myProgressTo_act(1, cc.dataMgr.gameData.userOther.curScore / cc.dataMgr.gameData.totalScore, this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress));
+
     }
 
     showOverHint() {
-        let numMy = cc.dataMgr.gameData.userMy.cardGet;
-        let numOther = cc.dataMgr.gameData.userOther.cardGet;
+        //let numMy = cc.dataMgr.gameData.userMy.cardGet;
+        // let numOther = cc.dataMgr.gameData.userOther.cardGet;
 
-        this.hint_my.active = true;
-        this.hint_my.getChildByName("spr_success").active = (numMy == cc.dataMgr.gameData.aimNum);
-        this.hint_my.getChildByName("spr_faild").active = (numMy != cc.dataMgr.gameData.aimNum);
-        this.hint_other.active = true;
-        this.hint_other.getChildByName("spr_success").active = (numOther == cc.dataMgr.gameData.aimNum);
-        this.hint_other.getChildByName("spr_faild").active = (numOther != cc.dataMgr.gameData.aimNum);
+        // this.hint_my.active = true;
+        // this.hint_my.getChildByName("spr_success").active = (numMy == cc.dataMgr.gameData.aimNum);
+        // this.hint_my.getChildByName("spr_faild").active = (numMy != cc.dataMgr.gameData.aimNum);
+        // this.hint_other.active = true;
+        // this.hint_other.getChildByName("spr_success").active = (numOther == cc.dataMgr.gameData.aimNum);
+        // this.hint_other.getChildByName("spr_faild").active = (numOther != cc.dataMgr.gameData.aimNum);
 
-        this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
-        this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
+        // this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
+        // this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
 
-        this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 + 60, this.node_score.y)));
-        this.node_time.active = false;
+        // this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 + 60, this.node_score.y)));
+        // this.node_time.active = false;
 
-        if (numMy == cc.dataMgr.gameData.aimNum)
-            cc.audioMgr.playEffect("success");
+        // if (numMy == cc.dataMgr.gameData.aimNum)
+        //     cc.audioMgr.playEffect("success");
+        console.log("单小局结束！！");
     }
 
     gameOver() {
-        if (cc.dataMgr.gameData.onGaming) {
+        if (!this.isAnswer) {
             console.log("-- 超时 游戏结束 --");
-            cc.dataMgr.gameData.onGaming = false;
-            cc.dataMgr.broadcastOneSmallGmaeOver();
+            //cc.dataMgr.gameData.onGaming = false;
+            //cc.dataMgr.broadcastOneSmallGmaeOver();
+            this.isAnswer = true;
+            let message = [
+                3,
+                0,
+                "Z"
+            ];//超时 默认传Z 给0分
+            console.log(message);
+            cc.dataMgr.broadcast(message, 1);
         }
     }
 
