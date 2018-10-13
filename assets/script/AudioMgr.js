@@ -31,6 +31,7 @@ export default class AudioMgr extends cc.Component {
 
     //type_s 为这个音乐的名称
     playEffect(type_s) {
+        console.log("播放--> " +type_s);
             let source = this._audioSource_o[type_s];
             if (source) {
                 source.play();

@@ -319,7 +319,7 @@ export default class Game extends cc.Component {
 
         // if (numMy == cc.dataMgr.gameData.aimNum)
         //     cc.audioMgr.playEffect("success");
-        if(cc.dataMgr.gameData.result == this.cpData.result) {
+        if(cc.dataMgr.gameData.userMy.result == this.cpData.result) {
             cc.audioMgr.playEffect("success");
         } else {
             cc.audioMgr.playEffect("shibai");
