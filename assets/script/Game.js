@@ -203,7 +203,7 @@ export default class Game extends cc.Component {
     AILogic() {
 
         this.node_other.stopAllActions();
-        this.AIRandTime = Math.random() * 4 + 1;
+        this.AIRandTime = Math.floor(Math.random()* 4) + 1;
         this.node_other.runAction(cc.sequence(cc.delayTime(this.AIRandTime), cc.callFunc(this.autoAnswer, this)));
 
     }
@@ -221,7 +221,7 @@ export default class Game extends cc.Component {
         } else if(ri == 3){
             rA = "D";
         }
-
+        rA = this.cpData.result;
         let score = 0;
         if (rA == this.cpData.result) {
             console.log("AI答对了");

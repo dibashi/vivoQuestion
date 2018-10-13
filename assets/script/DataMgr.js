@@ -22,7 +22,7 @@ export default class DataMgr extends cc.Component {
 
         onGaming: false,//游戏是否开始
 
-        perTime:10,//每局时间 用于Ai 与下面这个值必须一样
+        perTime: 10,//每局时间 用于Ai 与下面这个值必须一样
         countTime: 10,//游戏的倒计时
 
         countGame: 0,//当前玩的是第几小局
@@ -206,12 +206,19 @@ export default class DataMgr extends cc.Component {
     }
 
     gameOver() {
-        if (cc.dataMgr.gameData.userMy.hp <= 0 || cc.dataMgr.gameData.userOther.hp <= 0) {
-            cc.dataMgr.gameData.onGaming = false;
-            if (cc.dataMgr.gameData.userMy.hp == cc.dataMgr.gameData.userOther.hp)
-                GameSDK.gameOver(3);
-            else
-                GameSDK.gameOver(cc.dataMgr.gameData.userMy.hp <= 0 ? 2 : 1);
+        cc.dataMgr.gameData.onGaming = false;
+        if (cc.dataMgr.gameData.userMy.curScore == cc.dataMgr.gameData.userOther.curScore) {
+            
+            console.log("----------------平局-------------");
+            GameSDK.gameOver(3);
+        } else if (cc.dataMgr.gameData.userMy.curScore < cc.dataMgr.gameData.userOther.curScore) {
+            
+            console.log("----------------失败-------------");
+            GameSDK.gameOver(2);
+        } else {
+            
+            console.log("----------------胜利-------------");
+            GameSDK.gameOver(1);
         }
     }
 
@@ -327,7 +334,7 @@ export default class DataMgr extends cc.Component {
 
                             cc.dataMgr.gameData.userMy.curScore += messageArr[1];
                             cc.dataMgr.gameData.userMy.result = messageArr[2];
-                            
+
                             let gameJs = cc.find("Canvas").getComponent("Game");
                             if (gameJs) {
                                 gameJs.changeMyScore();
@@ -339,14 +346,15 @@ export default class DataMgr extends cc.Component {
                         }
                         else {
                             console.log("-- message step Other --");
+                            cc.dataMgr.gameData.userOther.curScore += messageArr[1];
                             cc.dataMgr.gameData.userOther.result = messageArr[2];
                             let gameJs = cc.find("Canvas").getComponent("Game");
                             if (gameJs) {
                                 gameJs.changeOtherScore();
                             }
-                               
+
                             if (cc.dataMgr.gameData.userMy.result)
-                            cc.dataMgr.broadcastOneSmallGmaeOver();
+                                cc.dataMgr.broadcastOneSmallGmaeOver();
                         }
                     }
                     else if (messageArr[0] == 1) {
@@ -364,10 +372,10 @@ export default class DataMgr extends cc.Component {
                         if (gameJs)
                             gameJs.showOverHint();
 
-                        if (cc.dataMgr.gameData.countGame<=cc.dataMgr.gameData.totalQuestion) {
+                        if (cc.dataMgr.gameData.countGame < cc.dataMgr.gameData.totalQuestion) {
                             cc.dataMgr.scheduleOnce(function () {
                                 let gameJs = cc.find("Canvas").getComponent("Game");
-                                
+
                                 gameJs.beginGame();
                             }, 1.2);
                         }
@@ -383,7 +391,7 @@ export default class DataMgr extends cc.Component {
     }
 
     onFinish(param) {
-        console.log("-- onFinish 游戏结束 -- " + cc.dataMgr.gameData.userOther.hp + " -- " + cc.dataMgr.gameData.userMy.hp);
+        console.log("-- onFinish 游戏结束 -- " + cc.dataMgr.gameData.userOther.curScore + " -- " + cc.dataMgr.gameData.userMy.curScore);
         //判断整体游戏的 是否结束
         let result = param.result;
         if (typeof (result) != "number")
@@ -391,10 +399,21 @@ export default class DataMgr extends cc.Component {
 
         cc.dataMgr.gameData.onGaming = false;
         cc.dataMgr.scheduleOnce(function () {
-            if (cc.dataMgr.gameData.userMy.hp == cc.dataMgr.gameData.userOther.hp)
+
+            if (cc.dataMgr.gameData.userMy.curScore == cc.dataMgr.gameData.userOther.curScore) {
+            
+                console.log("----------------finish平局-------------");
                 GameSDK.finish(3);
-            else
-                GameSDK.finish(cc.dataMgr.gameData.userMy.hp <= 0 ? 2 : 1);
+            } else if (cc.dataMgr.gameData.userMy.curScore < cc.dataMgr.gameData.userOther.curScore) {
+                
+                console.log("----------------finish失败-------------");
+                GameSDK.finish(2);
+            } else {
+                
+                console.log("----------------finish胜利-------------");
+                GameSDK.finish(1);
+            }
+
         }, 0.8);
     }
 
