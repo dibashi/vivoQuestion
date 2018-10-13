@@ -221,7 +221,7 @@ export default class Game extends cc.Component {
         } else if(ri == 3){
             rA = "D";
         }
-        rA = this.cpData.result;
+      
         let score = 0;
         if (rA == this.cpData.result) {
             console.log("AI答对了");
