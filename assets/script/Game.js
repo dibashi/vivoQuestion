@@ -149,22 +149,22 @@ export default class Game extends cc.Component {
         console.log(this.cpData);
 
         let indexString = "";
-        if(cc.dataMgr.gameData.countGame == 1) {
+        if (cc.dataMgr.gameData.countGame == 1) {
             indexString = "第一题";
-        } else if(cc.dataMgr.gameData.countGame == 2) {
+        } else if (cc.dataMgr.gameData.countGame == 2) {
             indexString = "第二题";
-        }else if(cc.dataMgr.gameData.countGame == 3) {
+        } else if (cc.dataMgr.gameData.countGame == 3) {
             indexString = "第三题";
-        }else if(cc.dataMgr.gameData.countGame == 4) {
+        } else if (cc.dataMgr.gameData.countGame == 4) {
             indexString = "第四题";
-        }else if(cc.dataMgr.gameData.countGame == 5) {
+        } else if (cc.dataMgr.gameData.countGame == 5) {
             indexString = "最后一题！";
         }
 
         this.indexLabel.string = indexString;
 
 
-        for(let bi = 0; bi<this.btn_results.length;bi++) {
+        for (let bi = 0; bi < this.btn_results.length; bi++) {
             this.btn_results[bi].getComponent("BtnLogic").showNormal();
             this.btn_results[bi].interactable = true;
         }
@@ -178,7 +178,7 @@ export default class Game extends cc.Component {
         this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5, 1, beginRange), this.myCircleTo_act(9.5, 0, 1)));
 
 
-       
+
 
         //初始化 题目 答案 显示
         this.node_game.active = true;
@@ -198,25 +198,25 @@ export default class Game extends cc.Component {
     AILogic() {
 
         this.node_other.stopAllActions();
-        this.AIRandTime = Math.floor(Math.random()* 4) + 1;
+        this.AIRandTime = Math.floor(Math.random() * 4) + 1;
         this.node_other.runAction(cc.sequence(cc.delayTime(this.AIRandTime), cc.callFunc(this.autoAnswer, this)));
 
     }
 
     autoAnswer() {
-       let ri = Math.floor(Math.random()*4) +1;
+        let ri = Math.floor(Math.random() * 4) + 1;
         console.log("-- ai -- " + ri);
-        let rA ="Z";
-        if(ri == 1) {
+        let rA = "Z";
+        if (ri == 1) {
             rA = "A";
-        } else if(ri == 2) {
+        } else if (ri == 2) {
             rA = "B";
-        } else if(ri == 3) {
+        } else if (ri == 3) {
             rA = "C";
-        } else if(ri == 4){
+        } else if (ri == 4) {
             rA = "D";
         }
-      
+
         let score = 0;
         if (rA == this.cpData.result) {
             console.log("AI答对了");
@@ -249,7 +249,7 @@ export default class Game extends cc.Component {
 
 
     resultBtnClick(event, eventData) {
-        for(let bi = 0; bi<this.btn_results.length;bi++) {
+        for (let bi = 0; bi < this.btn_results.length; bi++) {
             this.btn_results[bi].interactable = false;
         }
         cc.audioMgr.playEffect("button");
@@ -271,14 +271,14 @@ export default class Game extends cc.Component {
         }
 
         let rd = 0;
-        if(eventData == "A") {
+        if (eventData == "A") {
             rd = 1;
-        } else if(eventData == "B") {
+        } else if (eventData == "B") {
             rd = 2;
-        } else if(eventData == "C") {
+        } else if (eventData == "C") {
             rd = 3;
         } else {
-            rd =4;
+            rd = 4;
         }
 
         let message = [
@@ -309,8 +309,8 @@ export default class Game extends cc.Component {
     }
 
     showOverHint() {
-       
-        if(cc.dataMgr.gameData.userMy.result == this.cpData.result) {
+
+        if (cc.dataMgr.gameData.userMy.result == this.cpData.result) {
             cc.audioMgr.playEffect("success");
         } else {
             cc.audioMgr.playEffect("shibai");
@@ -320,50 +320,62 @@ export default class Game extends cc.Component {
         let iR = this.convertABCDTo0123(this.cpData.result);
         let myR = this.convertABCDTo0123(cc.dataMgr.gameData.userMy.result);
         let otherR = this.convertABCDTo0123(cc.dataMgr.gameData.userOther.result);
-        for(let bi = 0; bi<this.btn_results.length;bi++) {
+        for (let bi = 0; bi < this.btn_results.length; bi++) {
             // this.btn_results[bi].getComponent("BtnLogic").showNormal();
             // this.btn_results[bi].interactable = true;
             //1 确定该按钮是否显示
             //2 确定该按钮的颜色
             //3 确定是否显示左边的OX
             //4 确定是否显示右边的OX
-            
-            this.btn_results[bi].node.active =false;
+
+            this.btn_results[bi].node.active = false;
         }
-        if(iR != -1) {
-            if(myR == iR) {
-                if(otherR == iR) {
-                    this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",true,false,true,false);
+        if (iR != -1) {
+            if (myR == iR) {
+                if (otherR == iR) {
+                    this.btn_results[iR].getComponent("BtnLogic").showResult(true, "green", true, false, true, false);
                 } else {
-                    this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",true,false,false,false);
-                    this.btn_results[otherR].getComponent("BtnLogic").showResult(true,"red",false,false,false,true);
+                    this.btn_results[iR].getComponent("BtnLogic").showResult(true, "green", true, false, false, false);
+                    if (otherR != -1) {
+                        this.btn_results[otherR].getComponent("BtnLogic").showResult(true, "red", false, false, false, true);
+                    }
+
                 }
             } else {//我的答案和正确答案不一样
-                if(otherR == iR) {
-                    this.btn_results[myR].getComponent("BtnLogic").showResult(true,"red",false,true,false,false);
-                    this.btn_results[iR].getComponent("BtnLogic").showResult(this,"green",false,false,true,false);
+                if (otherR == iR) {
+                    if (myR != -1) {
+                        this.btn_results[myR].getComponent("BtnLogic").showResult(true, "red", false, true, false, false);
+                    }
+
+                    this.btn_results[iR].getComponent("BtnLogic").showResult(this, "green", false, false, true, false);
                 } else {//两人答案与正确答案 都不一样，判断俩人答案是否一样
-                    if(otherR == myR) {
-                        this.btn_results[myR].getComponent("BtnLogic").showResult(true,"red",false,true,false,true);
-                        this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",false,false,false,false);
+                    if (otherR == myR) {
+                        if (myR != -1) {
+                            this.btn_results[myR].getComponent("BtnLogic").showResult(true, "red", false, true, false, true);
+                        }
+                        this.btn_results[iR].getComponent("BtnLogic").showResult(true, "green", false, false, false, false);
                     } else {
-                        this.btn_results[myR].getComponent("BtnLogic").showResult(true,"red",false,true,false,false);
-                        this.btn_results[otherR].getComponent("BtnLogic").showResult(true,"red",false,false,false,true);
-                        this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",false,false,false,false);
-                    } 
+                        if (myR != -1) {
+                            this.btn_results[myR].getComponent("BtnLogic").showResult(true, "red", false, true, false, false);
+                        }
+                        if (otherR != -1) {
+                            this.btn_results[otherR].getComponent("BtnLogic").showResult(true, "red", false, false, false, true);
+                        }
+                        this.btn_results[iR].getComponent("BtnLogic").showResult(true, "green", false, false, false, false);
+                    }
                 }
             }
         }
     }
 
     convertABCDTo0123(result) {
-        if(result == "A") {
+        if (result == "A") {
             return 0;
-        } else if(result == "B") {
+        } else if (result == "B") {
             return 1;
-        } else if(result == "C") {
+        } else if (result == "C") {
             return 2;
-        } else if(result == "D") {
+        } else if (result == "D") {
             return 3;
         } else {
             return -1;
@@ -436,5 +448,5 @@ export default class Game extends cc.Component {
         return sf;
     }
 
-    
+
 }
