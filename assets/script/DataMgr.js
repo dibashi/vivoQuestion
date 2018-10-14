@@ -250,6 +250,21 @@ export default class DataMgr extends cc.Component {
         GameSDK.setMic(0, 0);
     }
 
+    toABCD(rd) {
+        console.log("IntToABCD");
+        if(rd == 1) {
+            return "A";
+        } else if(rd == 2) {
+            return "B";
+        } else if(rd == 3) {
+            return "C";
+        } else if(rd == 4) {
+            return "D"
+        } else {
+            return "Z";
+        }
+    }
+
     //------ 返回回调相关处理 ------
 
     onInit(param) {
@@ -317,6 +332,7 @@ export default class DataMgr extends cc.Component {
     }
 
     onMessage(param) {
+        let self = this;
         console.log("-- onMessage 收到消息 --");
         console.log(param);
 
@@ -333,7 +349,8 @@ export default class DataMgr extends cc.Component {
                         if (param.userId == cc.dataMgr.gameData.userMy.userId) {
 
                             cc.dataMgr.gameData.userMy.curScore += messageArr[1];
-                            cc.dataMgr.gameData.userMy.result = messageArr[2];
+                            console.log(self);
+                            cc.dataMgr.gameData.userMy.result = cc.dataMgr.toABCD(messageArr[2]);
 
                             let gameJs = cc.find("Canvas").getComponent("Game");
                             if (gameJs) {
@@ -347,7 +364,7 @@ export default class DataMgr extends cc.Component {
                         else {
                             console.log("-- message step Other --");
                             cc.dataMgr.gameData.userOther.curScore += messageArr[1];
-                            cc.dataMgr.gameData.userOther.result = messageArr[2];
+                            cc.dataMgr.gameData.userOther.result = self.toABCD(messageArr[2]);
                             let gameJs = cc.find("Canvas").getComponent("Game");
                             if (gameJs) {
                                 gameJs.changeOtherScore();
@@ -389,6 +406,8 @@ export default class DataMgr extends cc.Component {
                 console.log("-- 警告 忽略消息!! --");
         }
     }
+
+    
 
     onFinish(param) {
         console.log("-- onFinish 游戏结束 -- " + cc.dataMgr.gameData.userOther.curScore + " -- " + cc.dataMgr.gameData.userMy.curScore);
