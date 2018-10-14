@@ -165,6 +165,7 @@ export default class Game extends cc.Component {
 
 
         for(let bi = 0; bi<this.btn_results.length;bi++) {
+            this.btn_results[bi].getComponent("BtnLogic").showNormal();
             this.btn_results[bi].interactable = true;
         }
         //倒计时 和 目标分值
@@ -177,35 +178,7 @@ export default class Game extends cc.Component {
         this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5, 1, beginRange), this.myCircleTo_act(9.5, 0, 1)));
 
 
-        // this.node_score.active = true;
-        // this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
-        // this.node_score.runAction(cc.moveTo(0.2, cc.v2(cc.dataMgr.canvasW / 2 - 60, this.node_score.y)));
-        // this.node_score.getChildByName("lab_score").getComponent(cc.Label).string = cc.dataMgr.gameData.aimNum;
-        // this.node_score.getChildByName("lab_scoreB").getComponent(cc.Label).string = cc.dataMgr.gameData.aimNum;
-
-        // this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.hp / 4);
-        // this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.hp / 4);
-
-        //移除并 初始化题目
-        // for (let i = 0; i < this.root_red.children.length; ++i) {
-        //     let nodeN = this.root_red.children[i];
-        //     nodeN.position = cc.v2(0, 0);
-        //     nodeN.active = false;
-        // }
-
-        // for (let i = 0; i < cc.dataMgr.gameData.gameCardArr.length; ++i) {
-        //     ++cc.dataMgr.gameData.countBox;
-        //     let cardNum = cc.dataMgr.gameData.gameCardArr[i];
-        //     let nodeN = null;
-        //     if (i < this.root_red.children.length)
-        //         nodeN = this.root_red.children[i];
-        //     else {
-        //         nodeN = cc.instantiate(this.pre_red);
-        //         this.root_red.addChild(nodeN);
-        //     }
-        //     nodeN.active = true;
-        //     nodeN.getComponent("NodeRed").initRed(cardNum, cc.dataMgr.gameData.countBox, null);
-        // }
+       
 
         //初始化 题目 答案 显示
         this.node_game.active = true;
@@ -343,6 +316,58 @@ export default class Game extends cc.Component {
             cc.audioMgr.playEffect("shibai");
         }
         console.log("单小局结束！！");
+
+        let iR = this.convertABCDTo0123(this.cpData.result);
+        let myR = this.convertABCDTo0123(cc.dataMgr.gameData.userMy.result);
+        let otherR = this.convertABCDTo0123(cc.dataMgr.gameData.userOther.result);
+        for(let bi = 0; bi<this.btn_results.length;bi++) {
+            // this.btn_results[bi].getComponent("BtnLogic").showNormal();
+            // this.btn_results[bi].interactable = true;
+            //1 确定该按钮是否显示
+            //2 确定该按钮的颜色
+            //3 确定是否显示左边的OX
+            //4 确定是否显示右边的OX
+            
+            this.btn_results[bi].node.active =false;
+        }
+        if(iR != -1) {
+            if(myR == iR) {
+                if(otherR == iR) {
+                    this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",true,false,true,false);
+                } else {
+                    this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",true,false,false,false);
+                    this.btn_results[otherR].getComponent("BtnLogic").showResult(true,"red",false,false,false,true);
+                }
+            } else {//我的答案和正确答案不一样
+                if(otherR == iR) {
+                    this.btn_results[myR].getComponent("BtnLogic").showResult(true,"red",false,true,false,false);
+                    this.btn_results[iR].getComponent("BtnLogic").showResult(this,"green",false,false,true,false);
+                } else {//两人答案与正确答案 都不一样，判断俩人答案是否一样
+                    if(otherR == myR) {
+                        this.btn_results[myR].getComponent("BtnLogic").showResult(true,"red",false,true,false,true);
+                        this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",false,false,false,false);
+                    } else {
+                        this.btn_results[myR].getComponent("BtnLogic").showResult(true,"red",false,true,false,false);
+                        this.btn_results[otherR].getComponent("BtnLogic").showResult(true,"red",false,false,false,true);
+                        this.btn_results[iR].getComponent("BtnLogic").showResult(true,"green",false,false,false,false);
+                    } 
+                }
+            }
+        }
+    }
+
+    convertABCDTo0123(result) {
+        if(result == "A") {
+            return 0;
+        } else if(result == "B") {
+            return 1;
+        } else if(result == "C") {
+            return 2;
+        } else if(result == "D") {
+            return 3;
+        } else {
+            return -1;
+        }
     }
 
     gameOver() {
