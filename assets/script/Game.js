@@ -213,16 +213,16 @@ export default class Game extends cc.Component {
     }
 
     autoAnswer() {
-       let ri = Math.floor(Math.random()*4);
+       let ri = Math.floor(Math.random()*4) +1;
         console.log("-- ai -- " + ri);
         let rA ="Z";
-        if(ri == 0) {
+        if(ri == 1) {
             rA = "A";
-        } else if(ri == 1) {
-            rA = "B";
         } else if(ri == 2) {
+            rA = "B";
+        } else if(ri == 3) {
             rA = "C";
-        } else if(ri == 3){
+        } else if(ri == 4){
             rA = "D";
         }
       
@@ -245,7 +245,7 @@ export default class Game extends cc.Component {
         let message = [
             3,
             score,
-            rA
+            ri
         ]
         console.log(message);
 
@@ -279,10 +279,21 @@ export default class Game extends cc.Component {
             console.log("答错了");
         }
 
+        let rd = 0;
+        if(eventData == "A") {
+            rd = 1;
+        } else if(eventData == "B") {
+            rd = 2;
+        } else if(eventData == "C") {
+            rd = 3;
+        } else {
+            rd =4;
+        }
+
         let message = [
             3,
             score,
-            eventData
+            rd
         ];
 
         console.log(message);
@@ -325,8 +336,8 @@ export default class Game extends cc.Component {
             let message = [
                 3,
                 0,
-                "Z"
-            ];//超时 默认传Z 给0分
+                -1
+            ];//超时 默认传-1,那边解析答案为"Z" 给0分
             console.log(message);
             cc.dataMgr.broadcast(message, 1);
         }
