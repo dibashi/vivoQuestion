@@ -29,6 +29,9 @@ export default class Game extends cc.Component {
     @property(cc.Node)
     node_game = null;
 
+    @property(cc.Label)
+    indexLabel = null;
+
     onLoad() {
         console.log("-- 实验区域 --");
         // let aa = {type:aimNum,aimNumArr:[18,18,14,11],time:1539237442447}
@@ -144,6 +147,21 @@ export default class Game extends cc.Component {
 
         console.log("-- 第 " + cc.dataMgr.gameData.countGame + " 小局 -- " + " -- " + cc.dataMgr.gameData.result);
         console.log(this.cpData);
+
+        let indexString = "";
+        if(cc.dataMgr.gameData.countGame == 1) {
+            indexString = "第一题";
+        } else if(cc.dataMgr.gameData.countGame == 2) {
+            indexString = "第二题";
+        }else if(cc.dataMgr.gameData.countGame == 3) {
+            indexString = "第三题";
+        }else if(cc.dataMgr.gameData.countGame == 4) {
+            indexString = "第四题";
+        }else if(cc.dataMgr.gameData.countGame == 5) {
+            indexString = "最后一题！";
+        }
+
+        this.indexLabel.string = indexString;
 
 
         for(let bi = 0; bi<this.btn_results.length;bi++) {
