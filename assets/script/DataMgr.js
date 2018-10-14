@@ -364,14 +364,14 @@ export default class DataMgr extends cc.Component {
                         else {
                             console.log("-- message step Other --");
                             cc.dataMgr.gameData.userOther.curScore += messageArr[1];
-                            cc.dataMgr.gameData.userOther.result = self.toABCD(messageArr[2]);
+                            cc.dataMgr.gameData.userOther.result = cc.dataMgr.toABCD(messageArr[2]);
                             let gameJs = cc.find("Canvas").getComponent("Game");
                             if (gameJs) {
                                 gameJs.changeOtherScore();
                             }
 
-                            if (cc.dataMgr.gameData.userMy.result)
-                                cc.dataMgr.broadcastOneSmallGmaeOver();
+                            // if (cc.dataMgr.gameData.userMy.result)
+                            //     cc.dataMgr.broadcastOneSmallGmaeOver();
                         }
                     }
                     else if (messageArr[0] == 1) {
@@ -379,7 +379,7 @@ export default class DataMgr extends cc.Component {
                         cc.dataMgr.setAimNumArr(messageArr[2], messageArr[1]);
                     }
                     else if (messageArr[0] == 2) {
-                        console.log("-- onMessage 一小局结束 --");
+                        console.log("-- onMessage 一小局结束 --"+cc.dataMgr.gameData.countGame);
                         //let param = [ 2,//代表一小局结束 result//输赢,cc.dataMgr.gameData.countGame, // 这是第几小局的结果 time]
 
 
