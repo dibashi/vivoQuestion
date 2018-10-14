@@ -370,8 +370,8 @@ export default class DataMgr extends cc.Component {
                                 gameJs.changeOtherScore();
                             }
 
-                            // if (cc.dataMgr.gameData.userMy.result)
-                            //     cc.dataMgr.broadcastOneSmallGmaeOver();
+                            if (cc.dataMgr.gameData.userMy.result && cc.dataMgr.gameData.userOther.type == 2)
+                                cc.dataMgr.broadcastOneSmallGmaeOver();
                         }
                     }
                     else if (messageArr[0] == 1) {
