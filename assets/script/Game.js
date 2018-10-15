@@ -102,11 +102,11 @@ export default class Game extends cc.Component {
 
         //初始化自己信息 和 玩家信息
         this.node_my.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userMy.headUrl);
-        this.node_my.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userMy.sex != "f");
+        this.node_my.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userMy.sex == "f");
         this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.curScore / cc.dataMgr.gameData.totalScore);
 
         this.node_other.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userOther.headUrl);
-        this.node_other.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userOther.sex != "f");
+        this.node_other.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userOther.sex == "f");
         this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.curScore / cc.dataMgr.gameData.totalScore);
 
 

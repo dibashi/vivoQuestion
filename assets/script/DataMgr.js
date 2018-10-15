@@ -62,7 +62,7 @@ export default class DataMgr extends cc.Component {
         "userOther": {
             "headUrl": "http://www.jeekegame.com/api/upload/ai_icon/128.jpg",
             "nickName": "涂鸦男孩",
-            "sex": "f",
+            "sex": "m",
             "type": 2,//type:2 是机器人机器人要自动抓红包。
             "userId": 10002280,
 
