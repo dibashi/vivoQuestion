@@ -67,7 +67,7 @@ export default class Game extends cc.Component {
 
         this.node_ready.active = true;
 
-        this.node_ready.getChildByName("tishi").active = true;
+        //this.node_ready.getChildByName("tishi").active = true;
         this.node_ready.getChildByName("spr_bg").active = true;
 
         this.initData();
