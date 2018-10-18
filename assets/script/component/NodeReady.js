@@ -35,6 +35,7 @@ export default class NodeReady extends cc.Component {
         this._moveTime = cc.dataMgr.canvasW / 2 / this._moveSpeed;
 
         this.spr_bg.active = true;
+        this.node.getChildByName("ziti_wait").active =false;
         this.node_tishi.active = false;
 
         //初始化位置
