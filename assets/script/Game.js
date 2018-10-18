@@ -133,6 +133,8 @@ export default class Game extends cc.Component {
     beginGame() {
         this.isAnswer = false; //标记用户还没有答题，若没打过，在超时时处理，若打过，超时不处理
         cc.dataMgr.gameData.onGaming = true;
+        cc.dataMgr.gameData.countBegin = Date.now();
+
         cc.dataMgr.gameData.userOther.result = null;
         cc.dataMgr.gameData.userMy.result = null;
         //整理 和 初始化数据
@@ -171,11 +173,11 @@ export default class Game extends cc.Component {
         //倒计时 和 目标分值
         this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
         this.node_time.active = true;
-        this.node_time.stopAllActions();
-        this.node_time.runAction(cc.repeat(cc.sequence(cc.delayTime(1), cc.callFunc(this.callCountTime, this)), cc.dataMgr.gameData.countTime));
+        // this.node_time.stopAllActions();
+        // this.node_time.runAction(cc.repeat(cc.sequence(cc.delayTime(1), cc.callFunc(this.callCountTime, this)), cc.dataMgr.gameData.countTime));
 
         let beginRange = this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange;
-        this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5, 1, beginRange), this.myCircleTo_act(9.5, 0, 1)));
+        //this.node_time.getChildByName("spr_bg").runAction(cc.sequence(this.myCircleTo_act(0.5, 1, beginRange), this.myCircleTo_act(9.5, 0, 1)));
 
 
 
@@ -249,6 +251,7 @@ export default class Game extends cc.Component {
 
 
     resultBtnClick(event, eventData) {
+
         for (let bi = 0; bi < this.btn_results.length; bi++) {
             this.btn_results[bi].interactable = false;
         }
@@ -385,7 +388,7 @@ export default class Game extends cc.Component {
     gameOver() {
         if (!this.isAnswer) {
             console.log("-- 超时 游戏结束 --");
-            //cc.dataMgr.gameData.onGaming = false;
+            
             //cc.dataMgr.broadcastOneSmallGmaeOver();
             this.isAnswer = true;
             let message = [
@@ -398,16 +401,16 @@ export default class Game extends cc.Component {
         }
     }
 
-    callCountTime() {
-        --cc.dataMgr.gameData.countTime;
-        if (cc.dataMgr.gameData.countTime <= 0) {
-            this.gameOver();
-            cc.dataMgr.gameData.countTime = 0;
-        }
-        this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
+    // callCountTime() {
+    //     --cc.dataMgr.gameData.countTime;
+    //     if (cc.dataMgr.gameData.countTime <= 0) {
+    //         this.gameOver();
+    //         cc.dataMgr.gameData.countTime = 0;
+    //     }
+    //     this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
 
 
-    }
+    // }
 
 
     //圆形cd:总时间、百分比(0~1)
@@ -446,6 +449,27 @@ export default class Game extends cc.Component {
             sf = this.atlas_frame.getSpriteFrame("hongbao1");
         }
         return sf;
+    }
+
+    callCountTime() {
+        // if (cc.dataMgr.gameData.countTime > 0 && cc.dataMgr.gameData.countBegin > 0) {
+        let showNum = cc.dataMgr.gameData.countTime*1000 - (cc.dataMgr.getTimeSecond_i() - cc.dataMgr.gameData.countBegin);
+        if (showNum <= 0) {
+            cc.dataMgr.gameData.onGaming = false;
+            this.gameOver();
+         
+        }
+        this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = Math.ceil(showNum/1000);
+
+        this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum/(cc.dataMgr.gameData.countTime*1000);
+        // }
+    }
+
+    update(dt) {
+        if (cc.dataMgr.gameData.onGaming) {
+            this.callCountTime();
+        }
+
     }
 
 

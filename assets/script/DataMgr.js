@@ -141,7 +141,8 @@ export default class DataMgr extends cc.Component {
     }
 
     getTimeSecond_i() {
-        return parseInt(Date.now() / 1000);
+        //return parseInt(Date.now() / 1000);
+        return parseInt(Date.now());
     }
 
     //------ http 请求实验 ------
