@@ -32,6 +32,9 @@ export default class Game extends cc.Component {
     @property(cc.Label)
     indexLabel = null;
 
+    @property(cc.Node)
+    node_success = null;
+
     onLoad() {
         console.log("-- 实验区域 --");
         // let aa = {type:aimNum,aimNumArr:[18,18,14,11],time:1539237442447}
@@ -193,8 +196,28 @@ export default class Game extends cc.Component {
         this.label_title.string = this.cpData.question;
 
         //判断是否为机器人 如果是开始ai
-        if (cc.dataMgr.gameData.userOther.type == 2)
+        if (cc.dataMgr.gameData.userOther.type == 2) {
             this.AILogic();
+        }
+        this.unschedule(this.timeOut_successOrFail);  
+        this.scheduleOnce(this.timeOut_successOrFail,20);
+    }
+
+    timeOut_successOrFail() {
+        if(cc.dataMgr.gameData.userOther.type == 2) {//如果是机器人，则直接判其负
+            //cc.dataMgr.gameData.onGaming = false;
+            console.log("对方是机器人，但玩家想缩放多长时间都可以")
+            //GameSDK.gameOver(2);
+        } else {//对方是人，但是没有重开下一小局，说明对面一直没有回来，则直接判当前玩家胜利。
+            console.log("对方是人，但是没有重开下一小局，说明对面一直没有回来，则直接判当前玩家胜利。");
+            this.node_success.active =true;
+            this.scheduleOnce(this.goOver,1.5);
+        }
+    }
+
+    goOver() {
+        console.log("----------------显示完胜利提示，直接掉胜利接口-------------");
+            GameSDK.gameOver(1);
     }
 
     AILogic() {
@@ -326,7 +349,7 @@ export default class Game extends cc.Component {
         let myR = this.convertABCDTo0123(cc.dataMgr.gameData.userMy.result);
         let otherR = this.convertABCDTo0123(cc.dataMgr.gameData.userOther.result);
         for (let bi = 0; bi < this.btn_results.length; bi++) {
-          
+
 
             this.btn_results[bi].node.active = false;
         }
@@ -385,7 +408,7 @@ export default class Game extends cc.Component {
     gameOver() {
         if (!this.isAnswer) {
             console.log("-- 超时 游戏结束 --");
-            
+
             //cc.dataMgr.broadcastOneSmallGmaeOver();
             this.isAnswer = true;
             let message = [
@@ -398,16 +421,7 @@ export default class Game extends cc.Component {
         }
     }
 
-    // callCountTime() {
-    //     --cc.dataMgr.gameData.countTime;
-    //     if (cc.dataMgr.gameData.countTime <= 0) {
-    //         this.gameOver();
-    //         cc.dataMgr.gameData.countTime = 0;
-    //     }
-    //     this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = cc.dataMgr.gameData.countTime;
 
-
-    // }
 
 
     //圆形cd:总时间、百分比(0~1)
@@ -448,25 +462,25 @@ export default class Game extends cc.Component {
         return sf;
     }
 
-    callCountTime() {
-        // if (cc.dataMgr.gameData.countTime > 0 && cc.dataMgr.gameData.countBegin > 0) {
-        let showNum = cc.dataMgr.gameData.countTime*1000 - (cc.dataMgr.getTimeSecond_i() - cc.dataMgr.gameData.countBegin);
-        if (showNum <= 0) {
-            cc.dataMgr.gameData.onGaming = false;
-            this.gameOver();
-         
-        }
-        this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = Math.ceil(showNum/1000);
+    // callCountTime() {
 
-        this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum/(cc.dataMgr.gameData.countTime*1000);
-        // }
-    }
+    // }
 
     update(dt) {
         if (cc.dataMgr.gameData.onGaming) {
-            this.callCountTime();
-        }
 
+            let showNum = cc.dataMgr.gameData.countTime * 1000 - (cc.dataMgr.getTimeSecond_i() - cc.dataMgr.gameData.countBegin);
+            if (showNum < 0) {
+                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = 0;
+                this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = 0;
+                cc.dataMgr.gameData.onGaming = false;
+                this.gameOver();
+
+            } else {
+                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = Math.ceil(showNum / 1000);
+                this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum / (cc.dataMgr.gameData.countTime * 1000);
+            }
+        }
     }
 
 

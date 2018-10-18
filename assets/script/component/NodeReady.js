@@ -16,6 +16,8 @@ export default class NodeReady extends cc.Component {
     @property(cc.Node)
     spr_close = null;
 
+   
+
     _moveIdx = 0;
     _moveSpeed = 1500;
     _moveTime = 0.6;
@@ -70,7 +72,7 @@ export default class NodeReady extends cc.Component {
             this._clickBtn = true;
 
             //this.node_tishi.active = false;
-            this.spr_bg.active = false;
+           // this.spr_bg.active = false;
 
             //获取房间信息之后 设置ready
             if (cc.dataMgr.gameData.canReady)
@@ -87,7 +89,7 @@ export default class NodeReady extends cc.Component {
             console.log("-- onClickBtn NodeReady --" + btnN);
             if (btnN == "spr_bg") {
                 if (this.node_tishi.active) {
-                    this.node_tishi.active = false;
+                 //   this.node_tishi.active = false;
                     this.callUserReady();
                 }
             }
