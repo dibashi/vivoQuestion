@@ -31,9 +31,17 @@ export default class Game extends cc.Component {
 
     @property(cc.Label)
     indexLabel = null;
+    @property(cc.Sprite)
+    indexSprite = null;
 
     @property(cc.Node)
     node_success = null;
+
+    @property(cc.SpriteFrame)
+    dijiti_SF = null;
+    @property(cc.SpriteFrame)
+    zuihouyiti_SF = null;
+    
 
     onLoad() {
         console.log("-- 实验区域 --");
@@ -154,16 +162,18 @@ export default class Game extends cc.Component {
         console.log(this.cpData);
 
         let indexString = "";
+        this.indexSprite.spriteFrame = this.dijiti_SF;
         if (cc.dataMgr.gameData.countGame == 1) {
-            indexString = "第一题";
+            indexString = "一";
         } else if (cc.dataMgr.gameData.countGame == 2) {
-            indexString = "第二题";
+            indexString = "二";
         } else if (cc.dataMgr.gameData.countGame == 3) {
-            indexString = "第三题";
+            indexString = "三";
         } else if (cc.dataMgr.gameData.countGame == 4) {
-            indexString = "第四题";
+            indexString = "四";
         } else if (cc.dataMgr.gameData.countGame == 5) {
-            indexString = "最后一题！";
+            indexString = "";
+            this.indexSprite.spriteFrame = this.zuihouyiti_SF;
         }
 
         this.indexLabel.string = indexString;
@@ -192,6 +202,10 @@ export default class Game extends cc.Component {
         this.label_results[1].string = this.cpData.B;
         this.label_results[2].string = this.cpData.C;
         this.label_results[3].string = this.cpData.D;
+
+        for(let i =0;i<this.label_results.length;i++) {
+            this.label_results[i].node.color = new cc.Color(0, 0, 0, 255);
+        }
 
         this.label_title.string = this.cpData.question;
 
@@ -344,6 +358,10 @@ export default class Game extends cc.Component {
             cc.audioMgr.playEffect("shibai");
         }
         console.log("单小局结束！！");
+
+        for(let i =0;i<this.label_results.length;i++) {
+            this.label_results[i].node.color = new cc.Color(255, 255, 255, 255);
+        }
 
         let iR = this.convertABCDTo0123(this.cpData.result);
         let myR = this.convertABCDTo0123(cc.dataMgr.gameData.userMy.result);
