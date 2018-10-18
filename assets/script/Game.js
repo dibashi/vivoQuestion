@@ -231,7 +231,7 @@ export default class Game extends cc.Component {
 
     goOver() {
         console.log("----------------显示完胜利提示，直接掉胜利接口-------------");
-            GameSDK.gameOver(1);
+            GameSDK.finish(1);
     }
 
     AILogic() {
