@@ -19,8 +19,11 @@ export default class NodeRed extends cc.Component {
     whiteSF = null;
     @property(cc.SpriteFrame)
     greenSF = null;
+    
     @property(cc.SpriteFrame)
     redSF = null;
+    @property(cc.SpriteFrame)
+    kuangSF = null;
 
    
 

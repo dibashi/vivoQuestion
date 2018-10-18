@@ -284,6 +284,8 @@ export default class Game extends cc.Component {
             rd = 4;
         }
 
+        this.btn_results[rd - 1].getComponent(cc.Sprite).spriteFrame = this.btn_results[rd - 1].getComponent("BtnLogic").kuangSF;
+
         let message = [
             3,
             score,
@@ -324,12 +326,7 @@ export default class Game extends cc.Component {
         let myR = this.convertABCDTo0123(cc.dataMgr.gameData.userMy.result);
         let otherR = this.convertABCDTo0123(cc.dataMgr.gameData.userOther.result);
         for (let bi = 0; bi < this.btn_results.length; bi++) {
-            // this.btn_results[bi].getComponent("BtnLogic").showNormal();
-            // this.btn_results[bi].interactable = true;
-            //1 确定该按钮是否显示
-            //2 确定该按钮的颜色
-            //3 确定是否显示左边的OX
-            //4 确定是否显示右边的OX
+          
 
             this.btn_results[bi].node.active = false;
         }
