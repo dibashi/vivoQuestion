@@ -209,15 +209,15 @@ export default class DataMgr extends cc.Component {
     gameOver() {
         cc.dataMgr.gameData.onGaming = false;
         if (cc.dataMgr.gameData.userMy.curScore == cc.dataMgr.gameData.userOther.curScore) {
-            
+
             console.log("----------------平局-------------");
             GameSDK.gameOver(3);
         } else if (cc.dataMgr.gameData.userMy.curScore < cc.dataMgr.gameData.userOther.curScore) {
-            
+
             console.log("----------------失败-------------");
             GameSDK.gameOver(2);
         } else {
-            
+
             console.log("----------------胜利-------------");
             GameSDK.gameOver(1);
         }
@@ -253,13 +253,13 @@ export default class DataMgr extends cc.Component {
 
     toABCD(rd) {
         console.log("IntToABCD");
-        if(rd == 1) {
+        if (rd == 1) {
             return "A";
-        } else if(rd == 2) {
+        } else if (rd == 2) {
             return "B";
-        } else if(rd == 3) {
+        } else if (rd == 3) {
             return "C";
-        } else if(rd == 4) {
+        } else if (rd == 4) {
             return "D"
         } else {
             return "Z";
@@ -299,8 +299,14 @@ export default class DataMgr extends cc.Component {
                 cc.dataMgr.gameData.userOther.type = otherD.type;
                 cc.dataMgr.gameData.userOther.userId = otherD.userId;
 
-                if (otherD.type == 2)
+                if (otherD.type == 2) {
                     cc.dataMgr.gameData.userOther.ready = true;
+                }
+
+                let gameJs = cc.find("Canvas").getComponent("Game");
+                if (gameJs) {
+                    gameJs.setGamePlayerInfo();
+                }
             }
         }
         else
@@ -380,7 +386,7 @@ export default class DataMgr extends cc.Component {
                         cc.dataMgr.setAimNumArr(messageArr[2], messageArr[1]);
                     }
                     else if (messageArr[0] == 2) {
-                        console.log("-- onMessage 一小局结束 --"+cc.dataMgr.gameData.countGame);
+                        console.log("-- onMessage 一小局结束 --" + cc.dataMgr.gameData.countGame);
                         //let param = [ 2,//代表一小局结束 result//输赢,cc.dataMgr.gameData.countGame, // 这是第几小局的结果 time]
 
 
@@ -408,7 +414,7 @@ export default class DataMgr extends cc.Component {
         }
     }
 
-    
+
 
     onFinish(param) {
         console.log("-- onFinish 游戏结束 -- " + cc.dataMgr.gameData.userOther.curScore + " -- " + cc.dataMgr.gameData.userMy.curScore);
@@ -421,15 +427,15 @@ export default class DataMgr extends cc.Component {
         cc.dataMgr.scheduleOnce(function () {
 
             if (cc.dataMgr.gameData.userMy.curScore == cc.dataMgr.gameData.userOther.curScore) {
-            
+
                 console.log("----------------finish平局-------------");
                 GameSDK.finish(3);
             } else if (cc.dataMgr.gameData.userMy.curScore < cc.dataMgr.gameData.userOther.curScore) {
-                
+
                 console.log("----------------finish失败-------------");
                 GameSDK.finish(2);
             } else {
-                
+
                 console.log("----------------finish胜利-------------");
                 GameSDK.finish(1);
             }

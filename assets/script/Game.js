@@ -41,7 +41,7 @@ export default class Game extends cc.Component {
     dijiti_SF = null;
     @property(cc.SpriteFrame)
     zuihouyiti_SF = null;
-    
+
 
     onLoad() {
         console.log("-- 实验区域 --");
@@ -102,6 +102,23 @@ export default class Game extends cc.Component {
         cc.dataMgr.canvasH = cc.find("Canvas").height;
     }
 
+    setGamePlayerInfo() {
+        //初始化自己信息 和 玩家信息
+        this.node_my.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userMy.headUrl);
+        this.node_my.getChildByName("tog_sex").active = (cc.dataMgr.gameData.userOther.sex == "f" || cc.dataMgr.gameData.userOther.sex == "m");
+
+
+        this.node_my.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userMy.sex == "f");
+        this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.curScore / cc.dataMgr.gameData.totalScore);
+
+        this.node_other.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userOther.headUrl);
+
+        this.node_other.getChildByName("tog_sex").active = (cc.dataMgr.gameData.userOther.sex == "f" || cc.dataMgr.gameData.userOther.sex == "m");
+
+        this.node_other.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userOther.sex == "f");
+        this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.curScore / cc.dataMgr.gameData.totalScore);
+    }
+
 
     initGame() {
         console.log("-- initGame 且 随机 ainNum -- " + cc.dataMgr.gameData.countTime);
@@ -111,14 +128,7 @@ export default class Game extends cc.Component {
         //其实已经ready过了，这里是onStart的回调。
         this.node_ready.getComponent("NodeReady").showReady();
 
-        //初始化自己信息 和 玩家信息
-        this.node_my.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userMy.headUrl);
-        this.node_my.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userMy.sex == "f");
-        this.node_my.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userMy.curScore / cc.dataMgr.gameData.totalScore);
 
-        this.node_other.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userOther.headUrl);
-        this.node_other.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userOther.sex == "f");
-        this.node_other.getChildByName("pro_hp").getComponent(cc.ProgressBar).progress = (cc.dataMgr.gameData.userOther.curScore / cc.dataMgr.gameData.totalScore);
 
 
 
@@ -203,7 +213,7 @@ export default class Game extends cc.Component {
         this.label_results[2].string = this.cpData.C;
         this.label_results[3].string = this.cpData.D;
 
-        for(let i =0;i<this.label_results.length;i++) {
+        for (let i = 0; i < this.label_results.length; i++) {
             this.label_results[i].node.color = new cc.Color(0, 0, 0, 255);
         }
 
@@ -213,25 +223,25 @@ export default class Game extends cc.Component {
         if (cc.dataMgr.gameData.userOther.type == 2) {
             this.AILogic();
         }
-        this.unschedule(this.timeOut_successOrFail);  
-        this.scheduleOnce(this.timeOut_successOrFail,20);
+        this.unschedule(this.timeOut_successOrFail);
+        this.scheduleOnce(this.timeOut_successOrFail, 20);
     }
 
     timeOut_successOrFail() {
-        if(cc.dataMgr.gameData.userOther.type == 2) {//如果是机器人，则直接判其负
+        if (cc.dataMgr.gameData.userOther.type == 2) {//如果是机器人，则直接判其负
             //cc.dataMgr.gameData.onGaming = false;
             console.log("对方是机器人，但玩家想缩放多长时间都可以")
             //GameSDK.gameOver(2);
         } else {//对方是人，但是没有重开下一小局，说明对面一直没有回来，则直接判当前玩家胜利。
             console.log("对方是人，但是没有重开下一小局，说明对面一直没有回来，则直接判当前玩家胜利。");
-            this.node_success.active =true;
-            this.scheduleOnce(this.goOver,1.5);
+            this.node_success.active = true;
+            this.scheduleOnce(this.goOver, 1.5);
         }
     }
 
     goOver() {
         console.log("----------------显示完胜利提示，直接掉胜利接口-------------");
-            GameSDK.finish(1);
+        GameSDK.finish(1);
     }
 
     AILogic() {
@@ -359,7 +369,7 @@ export default class Game extends cc.Component {
         }
         console.log("单小局结束！！");
 
-        for(let i =0;i<this.label_results.length;i++) {
+        for (let i = 0; i < this.label_results.length; i++) {
             this.label_results[i].node.color = new cc.Color(255, 255, 255, 255);
         }
 
