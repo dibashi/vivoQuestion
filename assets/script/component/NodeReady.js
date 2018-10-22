@@ -48,14 +48,14 @@ export default class NodeReady extends cc.Component {
         }
 
         this.callReady();
-        this.node.runAction(cc.repeat(cc.sequence(cc.delayTime(this._moveTime + 0.4), cc.callFunc(this.callReady, this)), this.node_spr.children.length));
+        this.node.runAction(cc.repeat(cc.sequence(cc.delayTime(this._moveTime + 0.5), cc.callFunc(this.callReady, this)), this.node_spr.children.length));
         cc.audioMgr.playEffect("readygo");
     }
 
     callReady() {
         if (this._moveIdx < this.node_spr.children.length) {
             let nodeN = this.node_spr.children[this._moveIdx];
-            nodeN.runAction(cc.sequence(cc.moveTo(this._moveTime, cc.v2(0, 0)), cc.delayTime(0.4), cc.moveTo(this._moveTime, cc.v2(-cc.dataMgr.canvasW / 2 - 250, 0))));
+            nodeN.runAction(cc.sequence(cc.moveTo(this._moveTime, cc.v2(0, 0)), cc.delayTime(0.5), cc.moveTo(this._moveTime, cc.v2(-cc.dataMgr.canvasW / 2 - 250, 0))));
         }
         else {
             //播放完成，之后就开始游戏了
