@@ -436,6 +436,10 @@ export default class Game extends cc.Component {
     gameOver() {
         if (!this.isAnswer) {
             console.log("-- 超时 游戏结束 --");
+            for (let bi = 0; bi < this.btn_results.length; bi++) {
+               
+                this.btn_results[bi].interactable = false;
+            }
 
             //cc.dataMgr.broadcastOneSmallGmaeOver();
             this.isAnswer = true;
@@ -505,7 +509,7 @@ export default class Game extends cc.Component {
                 this.gameOver();
 
             } else {
-                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = Math.ceil(showNum / 1000);
+                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = Math.round(showNum / 1000);
                 this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum / (cc.dataMgr.gameData.countTime * 1000);
             }
         }
