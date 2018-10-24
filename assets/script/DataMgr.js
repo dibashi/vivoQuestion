@@ -79,9 +79,9 @@ export default class DataMgr extends cc.Component {
     //------ SDK 相关数据 ------
     messageId = 0;
 
-    gameID = 854584554;
-    gameKey = "d9a81d56206356af325f0cafc1028b42";
-    gameSecret = "7408e86d08d4d92ab6e2868342cecb44";
+    gameID = 854584861;
+    gameKey = "9d1daae5c023b782c493498f5e80ef1c";
+    gameSecret = "e7f7c4a6bc43997cf302a463978b362f";
 
     initData() {
         //版本比较 是否重置数据
