@@ -105,7 +105,7 @@ export default class Game extends cc.Component {
     setGamePlayerInfo() {
         //初始化自己信息 和 玩家信息
         this.node_my.getChildByName("node_mask").getChildByName("spr_icon").getComponent("NodeIcon").initIcon(cc.dataMgr.gameData.userMy.headUrl);
-        this.node_my.getChildByName("tog_sex").active = (cc.dataMgr.gameData.userOther.sex == "f" || cc.dataMgr.gameData.userOther.sex == "m");
+        this.node_my.getChildByName("tog_sex").active = (cc.dataMgr.gameData.userMy.sex == "f" || cc.dataMgr.gameData.userMy.sex == "m");
 
 
         this.node_my.getChildByName("tog_sex").getComponent(cc.Toggle).isChecked = (cc.dataMgr.gameData.userMy.sex == "f");
