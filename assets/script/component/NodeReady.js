@@ -28,7 +28,7 @@ export default class NodeReady extends cc.Component {
     }
 
     start() {
-        this.scheduleOnce(this.callUserReady, 0);
+        this.scheduleOnce(this.callUserReady, 1.2);
     }
 
     showReady() {
