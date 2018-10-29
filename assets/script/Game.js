@@ -501,7 +501,7 @@ export default class Game extends cc.Component {
     update(dt) {
         if (cc.dataMgr.gameData.onGaming) {
 
-            let showNum = cc.dataMgr.gameData.countTime * 1000 - (cc.dataMgr.getTimeSecond_i() - cc.dataMgr.gameData.countBegin);
+            let showNum = cc.dataMgr.gameData.perTime * 1000 - (cc.dataMgr.getTimeSecond_i() - cc.dataMgr.gameData.countBegin);
             if (showNum < 0) {
                 this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = 0;
                 this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = 0;
@@ -509,8 +509,10 @@ export default class Game extends cc.Component {
                 this.gameOver();
 
             } else {
-                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = Math.round(showNum / 1000);
-                this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum / (cc.dataMgr.gameData.countTime * 1000);
+                var timeR =  Math.round(showNum / 1000);
+                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string =timeR;
+                cc.dataMgr.gameData.countTime = timeR;
+                this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum / (cc.dataMgr.gameData.perTime * 1000);
             }
         }
     }
