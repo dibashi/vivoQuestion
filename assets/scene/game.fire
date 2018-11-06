@@ -438,7 +438,7 @@
         "__id__": 79
       }
     ],
-    "_active": false,
+    "_active": true,
     "_level": 0,
     "_components": [
       {
@@ -518,7 +518,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 600,
-      "height": 160
+      "height": 114
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -565,8 +565,8 @@
     "_useOriginalSize": false,
     "_string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊！！啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
     "_N$string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊！！啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 35,
+    "_lineHeight": 38,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -866,7 +866,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 60
+      "height": 25
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -913,8 +913,8 @@
     "_useOriginalSize": false,
     "_string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
     "_N$string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-    "_fontSize": 30,
-    "_lineHeight": 30,
+    "_fontSize": 25,
+    "_lineHeight": 25,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1609,7 +1609,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 60
+      "height": 25
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1656,8 +1656,8 @@
     "_useOriginalSize": false,
     "_string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
     "_N$string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-    "_fontSize": 30,
-    "_lineHeight": 30,
+    "_fontSize": 25,
+    "_lineHeight": 25,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -2352,7 +2352,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 60
+      "height": 25
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2399,8 +2399,8 @@
     "_useOriginalSize": false,
     "_string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
     "_N$string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-    "_fontSize": 30,
-    "_lineHeight": 30,
+    "_fontSize": 25,
+    "_lineHeight": 25,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -3095,7 +3095,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 400,
-      "height": 60
+      "height": 25
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3142,8 +3142,8 @@
     "_useOriginalSize": false,
     "_string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
     "_N$string": "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
-    "_fontSize": 30,
-    "_lineHeight": 30,
+    "_fontSize": 25,
+    "_lineHeight": 25,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
