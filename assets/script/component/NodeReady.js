@@ -49,7 +49,11 @@ export default class NodeReady extends cc.Component {
 
         this.callReady();
         this.node.runAction(cc.repeat(cc.sequence(cc.delayTime(this._moveTime + 0.5), cc.callFunc(this.callReady, this)), this.node_spr.children.length));
-        cc.audioMgr.playEffect("readygo");
+        
+        if(cc.dataMgr.isPlaySound) {
+            cc.audioMgr.playEffect("readygo");
+        }
+        
     }
 
     callReady() {

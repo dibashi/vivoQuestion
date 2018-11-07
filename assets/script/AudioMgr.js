@@ -15,6 +15,8 @@ export default class AudioMgr extends cc.Component {
             cc.audioEngine.resumeAll();
         });
 
+        cc.audioEngine.setVolume(0.7);
+
         this.init();
     }
 

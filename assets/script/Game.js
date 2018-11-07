@@ -90,6 +90,8 @@ export default class Game extends cc.Component {
             //let DataMgr = require("DataMgr");
             cc.dataMgr = new DataMgr();
             cc.dataMgr.initData();
+            console.log("cc.dataMgr");
+            console.log(cc.dataMgr);
         }
         if (!cc.audioMgr) {
             //let AudioMgr = require("AudioMgr");
@@ -302,7 +304,11 @@ export default class Game extends cc.Component {
         for (let bi = 0; bi < this.btn_results.length; bi++) {
             this.btn_results[bi].interactable = false;
         }
-        cc.audioMgr.playEffect("button");
+
+        if (cc.dataMgr.isPlaySound) {
+            cc.audioMgr.playEffect("button");
+        }
+
         this.isAnswer = true;
         let score = 0;
         if (eventData == this.cpData.result) {
@@ -361,11 +367,14 @@ export default class Game extends cc.Component {
     }
 
     showOverHint() {
-
-        if (cc.dataMgr.gameData.userMy.result == this.cpData.result) {
-            cc.audioMgr.playEffect("success");
-        } else {
-            cc.audioMgr.playEffect("shibai");
+        console.log("isPlaySound");
+        console.log(cc.dataMgr.isPlaySound);
+        if (cc.dataMgr.isPlaySound) {
+            if (cc.dataMgr.gameData.userMy.result == this.cpData.result) {
+                cc.audioMgr.playEffect("success");
+            } else {
+                cc.audioMgr.playEffect("shibai");
+            }
         }
         console.log("单小局结束！！");
 
@@ -437,7 +446,7 @@ export default class Game extends cc.Component {
         if (!this.isAnswer) {
             console.log("-- 超时 游戏结束 --");
             for (let bi = 0; bi < this.btn_results.length; bi++) {
-               
+
                 this.btn_results[bi].interactable = false;
             }
 
@@ -509,8 +518,8 @@ export default class Game extends cc.Component {
                 this.gameOver();
 
             } else {
-                var timeR =  Math.round(showNum / 1000);
-                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string =timeR;
+                var timeR = Math.round(showNum / 1000);
+                this.node_time.getChildByName("lab_time").getComponent(cc.Label).string = timeR;
                 cc.dataMgr.gameData.countTime = timeR;
                 this.node_time.getChildByName("spr_bg").getComponent(cc.Sprite).fillRange = showNum / (cc.dataMgr.gameData.perTime * 1000);
             }

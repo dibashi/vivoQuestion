@@ -9,12 +9,11 @@
         onStartCB: null,
         onMessageCB: null,
         onFinishCB: null,
+        onAudioCB: null,
 
-        inDebug: false,//调试模式 即是在电脑 浏览器中(伪造了返回函数)
-
+        inDebug: true,//调试模式 即是在电脑 浏览器中(伪造了返回函数)
         // Internal -- Call Native 
         callNative: function (cmd, param) {
-            console.log("-- 调用 callNative -- " + cmd + " -- " + this.inDebug);
             if (!this.inDebug) {
                 if (param == null) {
                     param = "";
@@ -22,7 +21,6 @@
                     param = JSON.stringify(param);
                 }
                 var str = "js://callNative?cmd=" + cmd + "&param=" + param;
-                console.log(str);
                 return prompt(str);
             }
             else {
@@ -86,7 +84,6 @@
 
         // Internal -- Native Callback
         nativeCallback: function (cmd, param) {
-            console.log("-- 返回 native callBack -- " + cmd + " -- " + typeof (param) + " -- " + param);
             if (cmd == "onInit" && this.onInitCB) {
                 this.onInitCB(JSON.parse(param));
             } else if (cmd == "onRoomInfo" && this.onRoomInfoCB) {
@@ -95,10 +92,12 @@
                 this.onReadyCB(JSON.parse(param));
             } else if (cmd == "onStart" && this.onStartCB) {
                 this.onStartCB();
-            } else if (cmd == "onMessage") {
+            } else if (cmd == "onMessage" && this.onMessageCB) {
                 this.onMessageCB(JSON.parse(param));
             } else if (cmd == "onFinish" && this.onFinishCB) {
                 this.onFinishCB(JSON.parse(param));
+            } else if (cmd == "onAudio" && this.onAudioCB) {
+                this.onAudioCB(JSON.parse(param));
             }
         },
 
@@ -125,6 +124,10 @@
 
         setOnFinishCB: function (func) {
             this.onFinishCB = func;
+        },
+
+        setOnAudioCB: function (func) {
+            this.onAudioCB = func;
         },
 
         // 初始化SDK

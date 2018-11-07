@@ -11,6 +11,8 @@ export default class DataMgr extends cc.Component {
     canvasW = 720;
     version = "20181011"; //不同的 version 版本会清空本地信息
     beginTime = 1538968259632;//最早是游戏发布的时间
+    isPlaySound=1;//默认播放声音
+    //volume = 0.7;//默认声音大小
 
     //用户相关需要储存的数据
     userData = {
@@ -39,6 +41,8 @@ export default class DataMgr extends cc.Component {
         gameCardArr: [],//当前显示的 卡片
 
         oneOverData: null,//一小局结束的信息
+
+       
 
         //房间数据 和 玩家数据
         "gameId": 0,
@@ -175,6 +179,7 @@ export default class DataMgr extends cc.Component {
         GameSDK.setOnMessageCB(cc.dataMgr.onMessage);
         GameSDK.setOnFinishCB(cc.dataMgr.onFinish);
 
+        GameSDK.setOnAudioCB(cc.dataMgr.onAudio);
         GameSDK.init(1, this.gameID, this.gameKey, this.gameSecret);
     }
 
@@ -267,6 +272,16 @@ export default class DataMgr extends cc.Component {
     }
 
     //------ 返回回调相关处理 ------
+
+    onAudio(param) {
+        console.log("声音服务器回调");
+        console.log(param.enable);
+        if(!param.enable) { //关闭声音
+            cc.dataMgr.isPlaySound = 0;
+        } else {
+            cc.dataMgr.isPlaySound = 1;
+        }
+    }
 
     onInit(param) {
         console.log("-- onInit 初始化成功 --");
