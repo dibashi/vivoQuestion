@@ -11,7 +11,7 @@
         onFinishCB: null,
         onAudioCB: null,
 
-        inDebug: true,//调试模式 即是在电脑 浏览器中(伪造了返回函数)
+        inDebug: false,//调试模式 即是在电脑 浏览器中(伪造了返回函数)
         // Internal -- Call Native 
         callNative: function (cmd, param) {
             if (!this.inDebug) {
