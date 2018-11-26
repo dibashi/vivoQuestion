@@ -180,7 +180,7 @@ export default class DataMgr extends cc.Component {
         GameSDK.setOnFinishCB(cc.dataMgr.onFinish);
 
         GameSDK.setOnAudioCB(cc.dataMgr.onAudio);
-        GameSDK.init(1, this.gameID, this.gameKey, this.gameSecret);
+        GameSDK.init(2, this.gameID, this.gameKey, this.gameSecret);
     }
 
     getRoomInfo() {

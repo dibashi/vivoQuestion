@@ -126,7 +126,9 @@ export default class Game extends cc.Component {
         console.log("-- initGame 且 随机 ainNum -- " + cc.dataMgr.gameData.countTime);
         console.log(cc.dataMgr.gameData);
 
-        this.node_ready.active = true;
+        GameSDK.hideLoadProgress();
+
+        this.node_ready.active = false;
         //其实已经ready过了，这里是onStart的回调。
         this.node_ready.getComponent("NodeReady").showReady();
 
